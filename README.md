@@ -37,11 +37,12 @@ Supported file formats (TBC)
 
 Quick tutorial
 ======================
-Drag your file onto the application, anywhere except the large box in the middle of the screen. You can then set up your mask on the image, the default mode is "Paint mode". Left click to paint, right click to erase. You can change the brush size at the top of the window. In the same place there are three buttons to pick between "Paint Mode", "Rectangle Mode" and "Flood fill mode". In the rectangle mode just click and drag to draw a rectangle. The flood fill mode only uses the first frame in videos and gifs, so YMMV. If you want to clear or invert the mask you can do that through a couple of buttons further down the window. The "Use last mask" button can be used to undo a bad change, or recover the mask after a file was processed.
+Drag your file onto the application, anywhere except the large box in the middle of the screen. You can then set up your mask on the image, Left click to paint, right click to erase. Middle mouse to pan and use the scroll wheel to zoom
 
-Once your mask is done, pick an effect from the lower left menu. Click "process" on the right side of the window to apply the effect. 
+Once your mask is done, pick an effect from the lower left menu. Click "process" in the bottom right corner to apply the effect. 
 
 The processed media will then be displayed in the window. It will appear in the same directory as the source file, but with "_output" appended to the file name. Subsequent edits will appear with "_output(n)". You can jump forwards and backwards through a list of your processed files with the buttons just above the process button, useful if you want to retry an edit if the settings weren't quite right or start again. You can clear this list with the "Clear images" button.
+For a more detailed look, please read the [wiki](https://github.com/iliketigerz/GifCensor/wiki).
 
 Limitations, things to look out for
 ======================

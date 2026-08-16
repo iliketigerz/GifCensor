@@ -188,4 +188,8 @@
     <Error Condition="!Exists('..\packages\Magick.NET-Q16-AnyCPU.14.7.0\build\netstandard20\Magick.NET-Q16-AnyCPU.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Magick.NET-Q16-AnyCPU.14.7.0\build\netstandard20\Magick.NET-Q16-AnyCPU.targets'))" />
   </Target>
   <Import Project="..\packages\Magick.NET-Q16-AnyCPU.14.7.0\build\netstandard20\Magick.NET-Q16-AnyCPU.targets" Condition="Exists('..\packages\Magick.NET-Q16-AnyCPU.14.7.0\build\netstandard20\Magick.NET-Q16-AnyCPU.targets')" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy /Y /I "$(SolutionDir)runtime\*.html" "$(TargetDir)"
+xcopy /Y /I "$(SolutionDir)runtime\*.js" "$(TargetDir)"</PostBuildEvent>
+  </PropertyGroup>
 </Project>

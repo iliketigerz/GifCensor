@@ -1,0 +1,87 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build output
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+
+# Visual Studio generated files
+*.pdb
+*.ilk
+*.ipdb
+*.iobj
+*.VC.db
+*.VC.VC.opendb
+
+# NuGet packages
+packages/
+
+# NuGet generated files
+*.nupkg
+*.snupkg
+
+# Test results
+TestResults/
+*.trx
+
+# Code coverage
+*.coverage
+*.coveragexml
+
+# Visual Studio profiling
+*.psess
+*.vsp
+*.vspx
+*.sap
+
+# ReSharper
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+
+# Visual Studio Code
+.vscode/
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.cache
+
+# Logs
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+
+# Windows thumbnail cache
+Thumbs.db
+Thumbs.db:encryptable
+
+# Publish output
+publish/
+*.publishsettings
+
+# Azure / deployment
+PublishProfiles/
+
+# ClickOnce
+*.application
+*.manifest
+
+# Local database files
+*.mdf
+*.ldf
+
+
+*.dmp # Crash dumps
+
+.gitignore.bak

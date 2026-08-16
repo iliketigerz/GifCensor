@@ -20,7 +20,7 @@ Masking tools
 * Fill
 * Mask inversion
 * Retrieve last mask
-* Mask opacity - Effect is overlaid on the source frame
+* Opacity
 * Chroma key
 
 

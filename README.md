@@ -1,5 +1,5 @@
 # GifCensor
-Desktop program that lets you easily mess with different censoring effects, for images, gifs and videos.
+Desktop program that lets you easily mess with different censoring effects, for images, gifs and videos. I had a lot of fun messing with ezgif's censor function but wanted more features.
 
 ![Example](\docs\BBB_apple.gif)
 

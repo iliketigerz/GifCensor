@@ -29,9 +29,8 @@ namespace GifCensor
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.lblSize = new System.Windows.Forms.Label();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.label7 = new System.Windows.Forms.Label();
             this.webView21 = new Microsoft.Web.WebView2.WinForms.WebView2();
             this.lblSel = new System.Windows.Forms.Label();
             this.txtPxlSize = new System.Windows.Forms.TextBox();
@@ -62,11 +61,9 @@ namespace GifCensor
             this.colorDialog2 = new System.Windows.Forms.ColorDialog();
             this.panelChromaColor = new System.Windows.Forms.Panel();
             this.btnClear = new System.Windows.Forms.Button();
-            this.checkTracking = new System.Windows.Forms.CheckBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.checkReuseProcessed = new System.Windows.Forms.CheckBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.btnShowRange = new System.Windows.Forms.Button();
@@ -96,8 +93,10 @@ namespace GifCensor
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.btnStep = new System.Windows.Forms.Button();
             this.checkEncodeVid = new System.Windows.Forms.CheckBox();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
             this.btnPurge = new System.Windows.Forms.Button();
-            this.panel1.SuspendLayout();
+            this.checkReuseProcessed = new System.Windows.Forms.CheckBox();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.webView21)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -111,38 +110,19 @@ namespace GifCensor
             ((System.ComponentModel.ISupportInitialize)(this.numMaxFrame)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.tabPage3.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblSize
             // 
             this.lblSize.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblSize.AutoSize = true;
-            this.lblSize.Location = new System.Drawing.Point(84, 464);
+            this.lblSize.Location = new System.Drawing.Point(145, 466);
             this.lblSize.Name = "lblSize";
             this.lblSize.Size = new System.Drawing.Size(87, 13);
             this.lblSize.TabIndex = 1;
             this.lblSize.Text = "No media loaded";
             this.lblSize.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // panel1
-            // 
-            this.panel1.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.panel1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.panel1.Controls.Add(this.label7);
-            this.panel1.Enabled = false;
-            this.panel1.Location = new System.Drawing.Point(781, 524);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(161, 146);
-            this.panel1.TabIndex = 2;
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(15, 4);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(123, 13);
-            this.label7.TabIndex = 0;
-            this.label7.Text = "\"Dynamic\" mask options";
             // 
             // webView21
             // 
@@ -155,7 +135,7 @@ namespace GifCensor
             this.webView21.Location = new System.Drawing.Point(13, 20);
             this.webView21.Margin = new System.Windows.Forms.Padding(20);
             this.webView21.Name = "webView21";
-            this.webView21.Size = new System.Drawing.Size(1061, 392);
+            this.webView21.Size = new System.Drawing.Size(1026, 394);
             this.webView21.TabIndex = 4;
             this.webView21.ZoomFactor = 1D;
             // 
@@ -163,7 +143,7 @@ namespace GifCensor
             // 
             this.lblSel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblSel.AutoSize = true;
-            this.lblSel.Location = new System.Drawing.Point(408, 464);
+            this.lblSel.Location = new System.Drawing.Point(381, 466);
             this.lblSel.Name = "lblSel";
             this.lblSel.Size = new System.Drawing.Size(88, 13);
             this.lblSel.TabIndex = 5;
@@ -190,7 +170,7 @@ namespace GifCensor
             // btnCensor
             // 
             this.btnCensor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCensor.Location = new System.Drawing.Point(1015, 496);
+            this.btnCensor.Location = new System.Drawing.Point(993, 649);
             this.btnCensor.Name = "btnCensor";
             this.btnCensor.Size = new System.Drawing.Size(75, 23);
             this.btnCensor.TabIndex = 8;
@@ -250,9 +230,9 @@ namespace GifCensor
             // btnPrev
             // 
             this.btnPrev.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnPrev.Location = new System.Drawing.Point(956, 468);
+            this.btnPrev.Location = new System.Drawing.Point(934, 471);
             this.btnPrev.Name = "btnPrev";
-            this.btnPrev.Size = new System.Drawing.Size(53, 23);
+            this.btnPrev.Size = new System.Drawing.Size(50, 23);
             this.btnPrev.TabIndex = 15;
             this.btnPrev.Text = "<";
             this.btnPrev.UseVisualStyleBackColor = true;
@@ -261,9 +241,9 @@ namespace GifCensor
             // btnNext
             // 
             this.btnNext.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnNext.Location = new System.Drawing.Point(1015, 469);
+            this.btnNext.Location = new System.Drawing.Point(990, 471);
             this.btnNext.Name = "btnNext";
-            this.btnNext.Size = new System.Drawing.Size(59, 23);
+            this.btnNext.Size = new System.Drawing.Size(50, 23);
             this.btnNext.TabIndex = 16;
             this.btnNext.Text = ">";
             this.btnNext.UseVisualStyleBackColor = true;
@@ -276,7 +256,7 @@ namespace GifCensor
             this.chkDispProcessed.Checked = true;
             this.chkDispProcessed.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkDispProcessed.Enabled = false;
-            this.chkDispProcessed.Location = new System.Drawing.Point(773, 471);
+            this.chkDispProcessed.Location = new System.Drawing.Point(751, 466);
             this.chkDispProcessed.Name = "chkDispProcessed";
             this.chkDispProcessed.Size = new System.Drawing.Size(128, 17);
             this.chkDispProcessed.TabIndex = 17;
@@ -296,9 +276,9 @@ namespace GifCensor
             // richTextBox1
             // 
             this.richTextBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.richTextBox1.Location = new System.Drawing.Point(921, 523);
+            this.richTextBox1.Location = new System.Drawing.Point(901, 499);
             this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(169, 144);
+            this.richTextBox1.Size = new System.Drawing.Size(167, 144);
             this.richTextBox1.TabIndex = 19;
             this.richTextBox1.Text = "";
             // 
@@ -333,7 +313,7 @@ namespace GifCensor
             // radioJitter
             // 
             this.radioJitter.AutoSize = true;
-            this.radioJitter.Location = new System.Drawing.Point(218, 22);
+            this.radioJitter.Location = new System.Drawing.Point(10, 159);
             this.radioJitter.Name = "radioJitter";
             this.radioJitter.Size = new System.Drawing.Size(75, 17);
             this.radioJitter.TabIndex = 23;
@@ -342,7 +322,7 @@ namespace GifCensor
             // 
             // txtJitter
             // 
-            this.txtJitter.Location = new System.Drawing.Point(299, 22);
+            this.txtJitter.Location = new System.Drawing.Point(146, 158);
             this.txtJitter.Name = "txtJitter";
             this.txtJitter.Size = new System.Drawing.Size(58, 20);
             this.txtJitter.TabIndex = 24;
@@ -351,7 +331,7 @@ namespace GifCensor
             // btnChromaCol
             // 
             this.btnChromaCol.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnChromaCol.Location = new System.Drawing.Point(867, 567);
+            this.btnChromaCol.Location = new System.Drawing.Point(308, 86);
             this.btnChromaCol.Name = "btnChromaCol";
             this.btnChromaCol.Size = new System.Drawing.Size(44, 23);
             this.btnChromaCol.TabIndex = 26;
@@ -363,18 +343,17 @@ namespace GifCensor
             // 
             this.checkChroma.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.checkChroma.AutoSize = true;
-            this.checkChroma.Location = new System.Drawing.Point(778, 571);
+            this.checkChroma.Location = new System.Drawing.Point(219, 90);
             this.checkChroma.Name = "checkChroma";
             this.checkChroma.Size = new System.Drawing.Size(82, 17);
             this.checkChroma.TabIndex = 27;
             this.checkChroma.Text = "Chroma key";
             this.checkChroma.UseVisualStyleBackColor = true;
-            this.checkChroma.CheckedChanged += new System.EventHandler(this.checkChroma_CheckedChanged);
             // 
             // txtChromaSens
             // 
             this.txtChromaSens.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtChromaSens.Location = new System.Drawing.Point(835, 592);
+            this.txtChromaSens.Location = new System.Drawing.Point(276, 111);
             this.txtChromaSens.Name = "txtChromaSens";
             this.txtChromaSens.Size = new System.Drawing.Size(76, 20);
             this.txtChromaSens.TabIndex = 28;
@@ -384,7 +363,7 @@ namespace GifCensor
             // 
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(775, 597);
+            this.label3.Location = new System.Drawing.Point(216, 116);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(54, 13);
             this.label3.TabIndex = 29;
@@ -393,7 +372,7 @@ namespace GifCensor
             // btnPickColor
             // 
             this.btnPickColor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnPickColor.Location = new System.Drawing.Point(836, 618);
+            this.btnPickColor.Location = new System.Drawing.Point(277, 137);
             this.btnPickColor.Name = "btnPickColor";
             this.btnPickColor.Size = new System.Drawing.Size(75, 23);
             this.btnPickColor.TabIndex = 30;
@@ -419,7 +398,7 @@ namespace GifCensor
             // 
             this.panelChromaColor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.panelChromaColor.BackColor = System.Drawing.Color.Black;
-            this.panelChromaColor.Location = new System.Drawing.Point(779, 618);
+            this.panelChromaColor.Location = new System.Drawing.Point(220, 137);
             this.panelChromaColor.Name = "panelChromaColor";
             this.panelChromaColor.Size = new System.Drawing.Size(49, 25);
             this.panelChromaColor.TabIndex = 32;
@@ -428,26 +407,13 @@ namespace GifCensor
             // btnClear
             // 
             this.btnClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnClear.Location = new System.Drawing.Point(921, 496);
+            this.btnClear.Location = new System.Drawing.Point(901, 649);
             this.btnClear.Name = "btnClear";
-            this.btnClear.Size = new System.Drawing.Size(88, 23);
+            this.btnClear.Size = new System.Drawing.Size(86, 23);
             this.btnClear.TabIndex = 33;
             this.btnClear.Text = "Clear Images";
             this.btnClear.UseVisualStyleBackColor = true;
             this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
-            // 
-            // checkTracking
-            // 
-            this.checkTracking.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkTracking.AutoSize = true;
-            this.checkTracking.Enabled = false;
-            this.checkTracking.Location = new System.Drawing.Point(778, 544);
-            this.checkTracking.Name = "checkTracking";
-            this.checkTracking.Size = new System.Drawing.Size(97, 17);
-            this.checkTracking.TabIndex = 34;
-            this.checkTracking.Text = "Tracking Mask";
-            this.checkTracking.UseVisualStyleBackColor = true;
-            this.checkTracking.CheckedChanged += new System.EventHandler(this.checkTracking_CheckedChanged);
             // 
             // tabControl1
             // 
@@ -456,10 +422,11 @@ namespace GifCensor
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Location = new System.Drawing.Point(12, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(1095, 449);
+            this.tabControl1.Size = new System.Drawing.Size(1060, 451);
             this.tabControl1.TabIndex = 35;
             // 
             // tabPage1
@@ -468,46 +435,31 @@ namespace GifCensor
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(1087, 423);
+            this.tabPage1.Size = new System.Drawing.Size(1052, 425);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Main";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
             // tabPage2
             // 
-            this.tabPage2.Controls.Add(this.btnPurge);
-            this.tabPage2.Controls.Add(this.checkReuseProcessed);
             this.tabPage2.Controls.Add(this.pictureBox2);
             this.tabPage2.Controls.Add(this.pictureBox1);
             this.tabPage2.Controls.Add(this.btnShowRange);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(1087, 423);
+            this.tabPage2.Size = new System.Drawing.Size(1052, 425);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Per frame";
             this.tabPage2.UseVisualStyleBackColor = true;
-            // 
-            // checkReuseProcessed
-            // 
-            this.checkReuseProcessed.AutoSize = true;
-            this.checkReuseProcessed.Checked = true;
-            this.checkReuseProcessed.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkReuseProcessed.Location = new System.Drawing.Point(12, 93);
-            this.checkReuseProcessed.Name = "checkReuseProcessed";
-            this.checkReuseProcessed.Size = new System.Drawing.Size(143, 17);
-            this.checkReuseProcessed.TabIndex = 58;
-            this.checkReuseProcessed.Text = "Resue processed frames";
-            this.checkReuseProcessed.UseVisualStyleBackColor = true;
-            this.checkReuseProcessed.CheckedChanged += new System.EventHandler(this.checkReuseProcessed_CheckedChanged);
             // 
             // pictureBox2
             // 
             this.pictureBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBox2.Location = new System.Drawing.Point(622, 6);
+            this.pictureBox2.Location = new System.Drawing.Point(618, 6);
             this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(450, 405);
+            this.pictureBox2.Size = new System.Drawing.Size(450, 407);
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox2.TabIndex = 2;
             this.pictureBox2.TabStop = false;
@@ -518,7 +470,7 @@ namespace GifCensor
             | System.Windows.Forms.AnchorStyles.Left)));
             this.pictureBox1.Location = new System.Drawing.Point(157, 6);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(450, 405);
+            this.pictureBox1.Size = new System.Drawing.Size(450, 407);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 1;
             this.pictureBox1.TabStop = false;
@@ -536,7 +488,7 @@ namespace GifCensor
             // radioHSV
             // 
             this.radioHSV.AutoSize = true;
-            this.radioHSV.Location = new System.Drawing.Point(218, 63);
+            this.radioHSV.Location = new System.Drawing.Point(219, 20);
             this.radioHSV.Name = "radioHSV";
             this.radioHSV.Size = new System.Drawing.Size(47, 17);
             this.radioHSV.TabIndex = 36;
@@ -545,7 +497,7 @@ namespace GifCensor
             // 
             // txtHue
             // 
-            this.txtHue.Location = new System.Drawing.Point(322, 63);
+            this.txtHue.Location = new System.Drawing.Point(323, 20);
             this.txtHue.Name = "txtHue";
             this.txtHue.Size = new System.Drawing.Size(58, 20);
             this.txtHue.TabIndex = 37;
@@ -554,7 +506,7 @@ namespace GifCensor
             // 
             // txtSat
             // 
-            this.txtSat.Location = new System.Drawing.Point(322, 93);
+            this.txtSat.Location = new System.Drawing.Point(323, 68);
             this.txtSat.Name = "txtSat";
             this.txtSat.Size = new System.Drawing.Size(58, 20);
             this.txtSat.TabIndex = 38;
@@ -573,7 +525,7 @@ namespace GifCensor
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(289, 66);
+            this.label4.Location = new System.Drawing.Point(290, 24);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(27, 13);
             this.label4.TabIndex = 40;
@@ -582,7 +534,7 @@ namespace GifCensor
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(265, 96);
+            this.label5.Location = new System.Drawing.Point(266, 71);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(55, 13);
             this.label5.TabIndex = 41;
@@ -599,7 +551,7 @@ namespace GifCensor
             // 
             // trackBarHue
             // 
-            this.trackBarHue.Location = new System.Drawing.Point(386, 64);
+            this.trackBarHue.Location = new System.Drawing.Point(387, 20);
             this.trackBarHue.Maximum = 200;
             this.trackBarHue.Name = "trackBarHue";
             this.trackBarHue.Size = new System.Drawing.Size(78, 45);
@@ -610,7 +562,7 @@ namespace GifCensor
             // 
             // trackBarSat
             // 
-            this.trackBarSat.Location = new System.Drawing.Point(386, 95);
+            this.trackBarSat.Location = new System.Drawing.Point(387, 70);
             this.trackBarSat.Maximum = 200;
             this.trackBarSat.Name = "trackBarSat";
             this.trackBarSat.Size = new System.Drawing.Size(78, 45);
@@ -632,8 +584,7 @@ namespace GifCensor
             // 
             // btnInv
             // 
-            this.btnInv.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnInv.Location = new System.Drawing.Point(97, 19);
+            this.btnInv.Location = new System.Drawing.Point(95, 24);
             this.btnInv.Name = "btnInv";
             this.btnInv.Size = new System.Drawing.Size(75, 23);
             this.btnInv.TabIndex = 46;
@@ -643,8 +594,7 @@ namespace GifCensor
             // 
             // btnmaskloadtest
             // 
-            this.btnmaskloadtest.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnmaskloadtest.Location = new System.Drawing.Point(19, 48);
+            this.btnmaskloadtest.Location = new System.Drawing.Point(17, 53);
             this.btnmaskloadtest.Name = "btnmaskloadtest";
             this.btnmaskloadtest.Size = new System.Drawing.Size(153, 23);
             this.btnmaskloadtest.TabIndex = 47;
@@ -671,8 +621,7 @@ namespace GifCensor
             // 
             // btnClearMask
             // 
-            this.btnClearMask.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnClearMask.Location = new System.Drawing.Point(19, 19);
+            this.btnClearMask.Location = new System.Drawing.Point(17, 24);
             this.btnClearMask.Name = "btnClearMask";
             this.btnClearMask.Size = new System.Drawing.Size(75, 23);
             this.btnClearMask.TabIndex = 50;
@@ -683,7 +632,7 @@ namespace GifCensor
             // btnFirst
             // 
             this.btnFirst.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnFirst.Location = new System.Drawing.Point(921, 469);
+            this.btnFirst.Location = new System.Drawing.Point(901, 471);
             this.btnFirst.Name = "btnFirst";
             this.btnFirst.Size = new System.Drawing.Size(26, 23);
             this.btnFirst.TabIndex = 51;
@@ -694,7 +643,7 @@ namespace GifCensor
             // btnLast
             // 
             this.btnLast.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnLast.Location = new System.Drawing.Point(1077, 469);
+            this.btnLast.Location = new System.Drawing.Point(1042, 471);
             this.btnLast.Name = "btnLast";
             this.btnLast.Size = new System.Drawing.Size(26, 23);
             this.btnLast.TabIndex = 52;
@@ -704,9 +653,8 @@ namespace GifCensor
             // 
             // checkFrameRange
             // 
-            this.checkFrameRange.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.checkFrameRange.AutoSize = true;
-            this.checkFrameRange.Location = new System.Drawing.Point(23, 86);
+            this.checkFrameRange.Location = new System.Drawing.Point(21, 91);
             this.checkFrameRange.Name = "checkFrameRange";
             this.checkFrameRange.Size = new System.Drawing.Size(131, 17);
             this.checkFrameRange.TabIndex = 53;
@@ -716,8 +664,7 @@ namespace GifCensor
             // 
             // numMinFrame
             // 
-            this.numMinFrame.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.numMinFrame.Location = new System.Drawing.Point(23, 115);
+            this.numMinFrame.Location = new System.Drawing.Point(21, 120);
             this.numMinFrame.Maximum = new decimal(new int[] {
             999999,
             0,
@@ -735,8 +682,7 @@ namespace GifCensor
             // 
             // numMaxFrame
             // 
-            this.numMaxFrame.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.numMaxFrame.Location = new System.Drawing.Point(23, 143);
+            this.numMaxFrame.Location = new System.Drawing.Point(21, 148);
             this.numMaxFrame.Maximum = new decimal(new int[] {
             999999,
             0,
@@ -801,7 +747,7 @@ namespace GifCensor
             this.groupBox1.Controls.Add(this.txtHue);
             this.groupBox1.Controls.Add(this.txtLum);
             this.groupBox1.Controls.Add(this.txtSat);
-            this.groupBox1.Location = new System.Drawing.Point(28, 480);
+            this.groupBox1.Location = new System.Drawing.Point(28, 482);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(468, 190);
             this.groupBox1.TabIndex = 58;
@@ -818,11 +764,17 @@ namespace GifCensor
             this.groupBox2.Controls.Add(this.btnFrameStart);
             this.groupBox2.Controls.Add(this.btnClearMask);
             this.groupBox2.Controls.Add(this.numMaxFrame);
+            this.groupBox2.Controls.Add(this.panelChromaColor);
             this.groupBox2.Controls.Add(this.checkFrameRange);
+            this.groupBox2.Controls.Add(this.btnPickColor);
             this.groupBox2.Controls.Add(this.numMinFrame);
-            this.groupBox2.Location = new System.Drawing.Point(548, 484);
+            this.groupBox2.Controls.Add(this.txtChromaSens);
+            this.groupBox2.Controls.Add(this.checkChroma);
+            this.groupBox2.Controls.Add(this.btnChromaCol);
+            this.groupBox2.Controls.Add(this.label3);
+            this.groupBox2.Location = new System.Drawing.Point(513, 482);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(202, 183);
+            this.groupBox2.Size = new System.Drawing.Size(366, 190);
             this.groupBox2.TabIndex = 61;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Mask tools";
@@ -843,64 +795,77 @@ namespace GifCensor
             this.checkEncodeVid.AutoSize = true;
             this.checkEncodeVid.Checked = true;
             this.checkEncodeVid.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkEncodeVid.Location = new System.Drawing.Point(809, 494);
+            this.checkEncodeVid.Location = new System.Drawing.Point(653, 466);
             this.checkEncodeVid.Name = "checkEncodeVid";
             this.checkEncodeVid.Size = new System.Drawing.Size(92, 17);
             this.checkEncodeVid.TabIndex = 62;
             this.checkEncodeVid.Text = "Encode video";
             this.checkEncodeVid.UseVisualStyleBackColor = true;
             // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.btnPurge);
+            this.tabPage3.Controls.Add(this.checkReuseProcessed);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage3.Size = new System.Drawing.Size(1052, 425);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "Settings, utilities";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
             // btnPurge
             // 
-            this.btnPurge.Location = new System.Drawing.Point(12, 117);
+            this.btnPurge.Location = new System.Drawing.Point(12, 57);
             this.btnPurge.Name = "btnPurge";
             this.btnPurge.Size = new System.Drawing.Size(125, 46);
-            this.btnPurge.TabIndex = 59;
-            this.btnPurge.Text = "Purge temp files";
+            this.btnPurge.TabIndex = 61;
+            this.btnPurge.Text = "Purge frame folders";
             this.btnPurge.UseVisualStyleBackColor = true;
-            this.btnPurge.Click += new System.EventHandler(this.btnPurge_Click);
+            // 
+            // checkReuseProcessed
+            // 
+            this.checkReuseProcessed.AutoSize = true;
+            this.checkReuseProcessed.Checked = true;
+            this.checkReuseProcessed.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkReuseProcessed.Location = new System.Drawing.Point(12, 33);
+            this.checkReuseProcessed.Name = "checkReuseProcessed";
+            this.checkReuseProcessed.Size = new System.Drawing.Size(143, 17);
+            this.checkReuseProcessed.TabIndex = 60;
+            this.checkReuseProcessed.Text = "Resue processed frames";
+            this.checkReuseProcessed.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1119, 679);
+            this.ClientSize = new System.Drawing.Size(1084, 681);
             this.Controls.Add(this.checkEncodeVid);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.btnLast);
             this.Controls.Add(this.btnFirst);
             this.Controls.Add(this.tabControl1);
-            this.Controls.Add(this.checkTracking);
             this.Controls.Add(this.btnClear);
-            this.Controls.Add(this.panelChromaColor);
-            this.Controls.Add(this.btnPickColor);
-            this.Controls.Add(this.txtChromaSens);
-            this.Controls.Add(this.btnChromaCol);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.checkChroma);
             this.Controls.Add(this.richTextBox1);
             this.Controls.Add(this.chkDispProcessed);
             this.Controls.Add(this.btnNext);
             this.Controls.Add(this.btnPrev);
             this.Controls.Add(this.btnCensor);
             this.Controls.Add(this.lblSel);
-            this.Controls.Add(this.panel1);
             this.Controls.Add(this.lblSize);
+            this.MinimumSize = new System.Drawing.Size(1100, 720);
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResizeEnd += new System.EventHandler(this.Form1_ResizeEnd);
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.webView21)).EndInit();
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
-            this.tabPage2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarHue)).EndInit();
@@ -912,6 +877,8 @@ namespace GifCensor
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            this.tabPage3.ResumeLayout(false);
+            this.tabPage3.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -919,7 +886,6 @@ namespace GifCensor
 
         #endregion
         private System.Windows.Forms.Label lblSize;
-        private System.Windows.Forms.Panel panel1;
         private Microsoft.Web.WebView2.WinForms.WebView2 webView21;
         private System.Windows.Forms.Label lblSel;
         private System.Windows.Forms.TextBox txtPxlSize;
@@ -950,7 +916,6 @@ namespace GifCensor
         private System.Windows.Forms.ColorDialog colorDialog2;
         private System.Windows.Forms.Panel panelChromaColor;
         private System.Windows.Forms.Button btnClear;
-        private System.Windows.Forms.CheckBox checkTracking;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
@@ -965,7 +930,6 @@ namespace GifCensor
         private System.Windows.Forms.TrackBar trackBarSat;
         private System.Windows.Forms.TrackBar trackBarLum;
         private System.Windows.Forms.Button btnInv;
-        private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Button btnmaskloadtest;
         private System.Windows.Forms.TextBox txtAlpha;
         private System.Windows.Forms.Label label8;
@@ -978,14 +942,16 @@ namespace GifCensor
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.NumericUpDown numMinFrame;
         private System.Windows.Forms.NumericUpDown numMaxFrame;
-        private System.Windows.Forms.CheckBox checkReuseProcessed;
         private System.Windows.Forms.Button btnFrameEnd;
         private System.Windows.Forms.Button btnFrameStart;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Button btnStep;
         private System.Windows.Forms.CheckBox checkEncodeVid;
+        private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.Button btnPurge;
+        private System.Windows.Forms.CheckBox checkReuseProcessed;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }
 

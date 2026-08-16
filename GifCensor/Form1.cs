@@ -64,7 +64,6 @@ namespace GifCensor
 
         private bool logDetails = true;
 
-        bool isPickingColor = false;
 
         public Form1()
         {
@@ -111,10 +110,6 @@ namespace GifCensor
             webView21.CoreWebView2.NavigationCompleted += CoreWebView2_NavigationCompleted;
         }
 
-        //private void CoreWebView2_NavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
-        //{
-        //        webView21.CoreWebView2.ExecuteScriptAsync(webviewScript.Script); //Inject custom painting JS after media loaded
-        //}
 
         private void CoreWebView2_NavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
         {
@@ -203,13 +198,6 @@ namespace GifCensor
                 MessageBox.Show("Picker error: " + ex.Message);
             }
 
-        }
-
-        private static bool IsMasked(Bitmap mask, int x, int y) //Helper method, is the pixel masked
-        {
-            if (mask == null) return false;
-            if (x < 0 || y < 0 || x >= mask.Width || y >= mask.Height) return false;
-            return mask.GetPixel(x, y).A > 128;
         }
 
         private void ShowMedia() // Display the media at the current index in the "queue"
@@ -367,6 +355,32 @@ namespace GifCensor
             return d;
         }
 
+        private int GetFrameCount(MediaItem media)
+        {
+            if (media != null) 
+            {
+                if (media.Type == MediaType.Gif)
+                {
+                    Image gif = Image.FromFile(media.Path);
+                    return gif.GetFrameCount(FrameDimension.Time);
+                }
+                else if (media.Type == MediaType.Video)
+                {
+                    double fps = 0;
+
+                    ShellFile shellFile = ShellFile.FromFilePath(media.Path);
+                    fps = (double)(shellFile.Properties.System.Video.FrameRate.Value / 1000);
+
+                    float dur = (float)shellFile.Properties.System.Media.Duration.Value;
+                    dur = dur / 10000000;
+
+                    return (int)Math.Round(fps * dur);
+
+                }
+            }
+            return -1;
+        }
+
         private void UpdateLabels()
         {
             if (mediaIndex >= 0) //todo
@@ -513,18 +527,23 @@ namespace GifCensor
 
 
 
-        // Class to deserialize JSON selection rectangle from JS
-        public class SelectionRect
-        {
-            public int x { get; set; }
-            public int y { get; set; }
-            public int width { get; set; }
-            public int height { get; set; }
-        }
-
+        
 
         private async void btnCensor_Click(object sender, EventArgs e) //Click to start processing
         {
+            //Check start and end frame ranges are in order, if we are using them.
+            if (checkFrameRange.Checked)
+            {
+                bool check = CheckFrameRanges();
+
+                if (!check)
+                {
+                    MessageBox.Show("Start frame cannot be after end frame.");
+                    return;
+                }
+            }
+            
+
             btnCensor.Enabled = false;
 
             //Console.WriteLine($"Processing {webView21.Source}");
@@ -762,16 +781,10 @@ namespace GifCensor
 
             }
 
-
-
-            //}
-
             btnCensor.Enabled = true;
 
             Console.WriteLine("filepath " + path);
             DebugPrint($"Filepath " + path);
-
-
 
 
             if (chkDispProcessed.Checked) //If we should display the new image
@@ -954,39 +967,7 @@ namespace GifCensor
 
                 maskRef.Dispose();
             }
-            else if (checkTracking.Checked && maskBitmap != null)
-            {
-                frameMasks = new List<Bitmap>(totalFrames);
-
-                Rectangle trackedRegion = GetBoundingBoxOfMask(maskBitmap);
-                Console.WriteLine($"Initial tracked region: {trackedRegion}");
-
-                Bitmap prevFrame = (Bitmap)frames[0];
-                Bitmap prevMask = new Bitmap(maskBitmap);
-
-                frameMasks.Add(new Bitmap(prevMask)); // frame 0
-
-                for (int i = 1; i < totalFrames; i++)
-                {
-                    Bitmap currFrame = (Bitmap)frames[i];
-
-                    // Fast offset search around previous region
-                    Point offset = FindBestMatchOffset(prevMask, currFrame, trackedRegion, searchRadius: 10, sampleStep: 2);
-
-                    Console.WriteLine($"Frame {i}: offset = {offset.X},{offset.Y}");
-
-                    Bitmap shiftedMask = ShiftMask(prevMask, offset, currFrame.Width, currFrame.Height);
-                    frameMasks.Add(shiftedMask);
-
-                    prevMask = shiftedMask;
-                    prevFrame = currFrame;
-                    trackedRegion = new Rectangle(trackedRegion.X + offset.X, trackedRegion.Y + offset.Y,
-                                                  trackedRegion.Width, trackedRegion.Height);
-                }
-            }
-
-
-
+            
 
             // ----------------------------
             // FRAME RANGE HANDLING
@@ -1174,12 +1155,6 @@ namespace GifCensor
             return output;
         }
 
-
-
-
-
-
-
         private Image FixFormatting(Image inputImage) //Convert from other color profiles to a compatible one
         {
             var sourceMs = new MemoryStream();
@@ -1320,7 +1295,6 @@ namespace GifCensor
                 DebugPrint("Start of queue reached");
             }
 
-
             //Console.WriteLine("index " + mediaIndex + " / count" + mediaHistory.Count);
         }
 
@@ -1339,7 +1313,11 @@ namespace GifCensor
             //Console.WriteLine("index " + mediaIndex + " / count" + mediaHistory.Count);
         }
 
-
+        /// <summary>
+        /// A function to add an incremented number at the end of a file name if a file already exists. 
+        /// </summary>
+        /// <param name="file">Complete path to the file</param>
+        /// <returns>An incremented file name. </returns>
         private string AppendFileNumberIfExists(string file)
         {
             if (!File.Exists(file))
@@ -1379,68 +1357,6 @@ namespace GifCensor
             return newFile;
         }
 
-
-        /// <summary>
-        /// A function to add an incremented number at the end of a file name if a file already exists. 
-        /// </summary>
-        /// <param name="file">The file. This should be the complete path.</param>
-        /// <param name="ext">This can be empty.</param>
-        /// <returns>An incremented file name. </returns>
-        //private string AppendFileNumberIfExists(string file, string ext)
-        //{
-        //    // This had a VB tidbit that helped to get this started. 
-        //    // http://www.codeproject.com/Questions/212217/increment-filename-if-file-exists-using-csharp
-
-        //    // If the file exists, then do stuff. Otherwise, we just return the original file name.
-        //    if (File.Exists(file))
-        //    {
-        //        string folderPath = Path.GetDirectoryName(file); // The path to the file. No sense in dealing with this unecessarily. 
-        //        string fileName = Path.GetFileNameWithoutExtension(file); // The file name with no extension. 
-        //        string extension = string.Empty; // The file extension. 
-        //                                         // This lets us pass in an empty string for the file extension if required. i.e. It just makes this function a bit more versatile. 
-        //        if (ext == string.Empty)
-        //        {
-        //            extension = Path.GetExtension(file);
-        //        }
-        //        else
-        //        {
-        //            extension = ext;
-        //        }
-
-        //        // at this point, find out if the fileName ends in a number, then get that number.
-        //        int fileNumber = 0; // This stores the number as a number for us. 
-        //                            // need a regex here - \(([0-9]+)\)$
-        //        Regex r = new Regex(@"\(([0-9]+)\)$"); // This matches the pattern we are using, i.e. ~(#).ext
-        //        Match m = r.Match(fileName); // We pass in the file name with no extension.
-        //        string addSpace = "_"; // We'll add a space when we don't have our pattern in order to pad the pattern.
-        //        if (m.Success)
-        //        {
-        //            addSpace = string.Empty; // We have the pattern, so we don't add a space - it has already been added. 
-        //            string s = m.Groups[1].Captures[0].Value; // This is the single capture that we are looking for. Stored as a string.
-        //                                                      // set fileNumber to the new number.
-        //            fileNumber = int.Parse(s); // Convert the number to an int.
-        //                                       // remove the numbering from the string as we're constructing it again below.
-        //            fileName = fileName.Replace("(" + s + ")", "");
-        //        }
-
-        //        // Start looping. 
-        //        do
-        //        {
-        //            fileNumber += 1; // Increment the file number that we have above. 
-        //            file = Path.Combine(folderPath, // Combine it all.
-        //                                    String.Format("{0}{3}({1}){2}", // The pattern to combine.
-        //                                                              fileName,         // The file name with no extension. 
-        //                                                              fileNumber,       // The file number.
-        //                                                              extension,        // The file extension.
-        //                                                              addSpace));       // A space if needed to pad the initial ~(#).ext pattern.
-        //        }
-        //        while (File.Exists(file)); // As long as the file name exists, keep looping. 
-        //    }
-        //    return file;
-        //}
-
-
-
         private void btnChromaCol_Click(object sender, EventArgs e)
         {
             if (colorDialog1.ShowDialog() == DialogResult.OK)
@@ -1472,133 +1388,9 @@ namespace GifCensor
             GC.Collect();
         }
 
-        private void checkChroma_CheckedChanged(object sender, EventArgs e)
-        {
-            if (checkChroma.Checked)
-                checkTracking.Checked = false;
-        }
-
-        private void checkTracking_CheckedChanged(object sender, EventArgs e)
-        {
-            if (checkTracking.Checked)
-                checkChroma.Checked = false;
-        }
-
-
-        Rectangle GetBoundingBoxOfMask(Bitmap mask)
-        {
-            int minX = mask.Width, minY = mask.Height, maxX = 0, maxY = 0;
-            for (int y = 0; y < mask.Height; y++)
-            {
-                for (int x = 0; x < mask.Width; x++)
-                {
-                    if (mask.GetPixel(x, y).A >= 128)
-                    {
-                        minX = Math.Min(minX, x);
-                        minY = Math.Min(minY, y);
-                        maxX = Math.Max(maxX, x);
-                        maxY = Math.Max(maxY, y);
-                    }
-                }
-            }
-            if (minX > maxX || minY > maxY) return Rectangle.Empty;
-            return Rectangle.FromLTRB(minX, minY, maxX + 1, maxY + 1);
-        }
-
-        /// <summary>
-        /// Finds the best translation offset of the previous mask to match the current frame within a search area.
-        /// </summary>
-        /// <param name="prevMask">The mask from the previous frame.</param>
-        /// <param name="currFrame">The current frame to match against.</param>
-        /// <param name="trackedRegion">The region of interest in the previous frame.</param>
-        /// <param name="searchArea">The area in the current frame to search for the mask.</param>
-        /// <returns>The offset (dx, dy) to apply to the previous mask.</returns>
-        Point FindBestMatchOffset(Bitmap prevMask, Bitmap currFrame, Rectangle trackedRegion, int searchRadius = 10, int sampleStep = 2)
-        {
-            int bestOffsetX = 0;
-            int bestOffsetY = 0;
-            double bestScore = double.MaxValue;
-
-            int maskWidth = prevMask.Width;
-            int maskHeight = prevMask.Height;
-
-            BitmapData prevData = prevMask.LockBits(new Rectangle(0, 0, maskWidth, maskHeight),
-                ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            BitmapData currData = currFrame.LockBits(new Rectangle(0, 0, currFrame.Width, currFrame.Height),
-                ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-
-            unsafe
-            {
-                byte* prevPtr = (byte*)prevData.Scan0;
-                int prevStride = prevData.Stride;
-
-                byte* currPtr = (byte*)currData.Scan0;
-                int currStride = currData.Stride;
-
-                int bytesPerPixel = 4;
-
-                // Only search small region around previous mask
-                for (int dy = -searchRadius; dy <= searchRadius; dy++)
-                {
-                    for (int dx = -searchRadius; dx <= searchRadius; dx++)
-                    {
-                        double score = 0;
-
-                        for (int y = 0; y < trackedRegion.Height; y += sampleStep)
-                        {
-                            for (int x = 0; x < trackedRegion.Width; x += sampleStep)
-                            {
-                                int px = trackedRegion.X + x;
-                                int py = trackedRegion.Y + y;
-
-                                byte* prevPx = prevPtr + py * prevStride + px * bytesPerPixel;
-                                if (prevPx[3] < 128) continue; // skip transparent pixels
-
-                                int cx = px + dx;
-                                int cy = py + dy;
-
-                                if (cx < 0 || cx >= currFrame.Width || cy < 0 || cy >= currFrame.Height) continue;
-
-                                byte* currPx = currPtr + cy * currStride + cx * bytesPerPixel;
-
-                                int dr = prevPx[2] - currPx[2];
-                                int dg = prevPx[1] - currPx[1];
-                                int db = prevPx[0] - currPx[0];
-
-                                score += Math.Abs(dr) + Math.Abs(dg) + Math.Abs(db);
-                            }
-                        }
-
-                        if (score < bestScore)
-                        {
-                            bestScore = score;
-                            bestOffsetX = dx;
-                            bestOffsetY = dy;
-
-                            if (score == 0) break; // perfect match
-                        }
-                    }
-                }
-            }
-
-            prevMask.UnlockBits(prevData);
-            currFrame.UnlockBits(currData);
-
-            return new Point(bestOffsetX, bestOffsetY);
-        }
-
-
-        Bitmap ShiftMask(Bitmap mask, Point offset, int width, int height)
-        {
-            Bitmap shifted = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            using (Graphics g = Graphics.FromImage(shifted))
-            {
-                g.Clear(Color.Transparent);
-                g.DrawImage(mask, offset.X, offset.Y);
-            }
-            return shifted;
-        }
-
+      
+       
+        
         private void Form1_ResizeEnd(object sender, EventArgs e)
         {
             //ShowGif();
@@ -2255,12 +2047,83 @@ namespace GifCensor
 
         private void numMinFrame_ValueChanged(object sender, EventArgs e)
         {
-            updatedStartEnd = false;
+            ClampFrameRanges();
+
+            if (numMinFrame.Value > numMaxFrame.Value)
+            {
+                numMinFrame.BackColor = Color.Orange;
+                toolTip1.SetToolTip(numMinFrame, "Start frame must come before the end frame. Processing will be prevented!");
+            }
+            else
+            {
+                numMinFrame.BackColor = default;
+                toolTip1.SetToolTip(numMinFrame, null);
+            }
+
+            
+
+            //This code allowed the end position to be bumped around if we tried to set the start too high, but this could make editing annoying if you wanted to set a specific value.
+            //if (numMinFrame.Value < 1) //Start frame cannot be before 1!
+            //{
+            //    numMinFrame.Value = 1;
+
+            //    updatedStartEnd = false;
+            //}
+            //else if (numMinFrame.Value > numMaxFrame.Value) //Don't let the start frame be higher than the end frame, but If they are equal, try and push the end frame higher...
+            //{
+            //    if (mediaHistory[mediaIndex] != null)
+            //    {
+            //        if (mediaHistory[mediaIndex].Type != MediaType.Image)
+            //        {
+            //            int count = GetFrameCount(mediaHistory[mediaIndex]); //Number of frames
+
+            //            //Increment and clamp the end frame 
+            //            numMaxFrame.Value++;
+            //            numMaxFrame.Value = Math.Max(numMinFrame.Value, Math.Min(numMaxFrame.Value, count)); 
+
+            //            numMinFrame.Value = numMaxFrame.Value; //Adjust start pos to match
+
+            //            updatedStartEnd = false;
+            //        }
+            //    }
+
+            //}
+
         }
 
         private void numMaxFrame_ValueChanged(object sender, EventArgs e)
         {
-            updatedStartEnd = false;
+            ClampFrameRanges();
+
+            if (numMaxFrame.Value < numMinFrame.Value)
+            {
+                numMaxFrame.BackColor = Color.Orange;
+                toolTip1.SetToolTip(numMaxFrame, "End frame must be after the start frame. Processing will be prevented!");
+            }
+            else
+            {
+                numMaxFrame.BackColor = default;
+                toolTip1.SetToolTip(numMaxFrame, null);
+            }
+
+            //if (mediaHistory[mediaIndex] != null) //This code allowed the start position to be bumped around if we tried to set the end too low, but this could make editing annoying if you wanted to set a specific value.
+            //{
+
+            //    if (mediaHistory[mediaIndex].Type != MediaType.Image)
+            //    {
+            //        int count = GetFrameCount(mediaHistory[mediaIndex]);
+
+            //        numMaxFrame.Value = Math.Max(1, Math.Min(numMaxFrame.Value, count)); //We should always ensure the end frame is in range.
+
+            //       if (numMinFrame.Value > numMaxFrame.Value)
+            //        {
+            //            numMinFrame.Value = numMaxFrame.Value;
+            //        }
+
+            //        updatedStartEnd = false;
+            //    }
+            //}
+
         }
 
         private void btnStep_Click(object sender, EventArgs e)
@@ -2277,40 +2140,80 @@ namespace GifCensor
             numMaxFrame.Value = max;
         }
 
-        private void btnPurge_Click(object sender, EventArgs e)
+        private void btnPurge_Click(object sender, EventArgs e) //Scan the directory of the current media item for any frame folders
         {
-            MediaItem media = mediaHistory[mediaIndex]; 
-            string mediaPath = media.Path;
-
-            string dir = Path.GetDirectoryName(mediaPath);
-
-            if (!Directory.Exists(dir))
-                return;
-
-            // Ensure all image/file handles are released
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-
-            foreach (string folder in Directory.GetDirectories(dir))
+            if (mediaIndex == -1)
             {
-                string name = Path.GetFileName(folder);
+                MessageBox.Show("Must have media loaded to purge directory");
+            }
+            else
+            {
+                MediaItem media = mediaHistory[mediaIndex];
+                string mediaPath = media.Path;
 
-                // Match any temp frame folders
-                if (name.Contains("_frames") ||
-                    name.Contains("_frames_processed"))
+                string dir = Path.GetDirectoryName(mediaPath);
+
+                if (!Directory.Exists(dir))
+                    return;
+
+                // Ensure all image/file handles are released
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+
+                foreach (string folder in Directory.GetDirectories(dir))
                 {
-                    try
+                    string name = Path.GetFileName(folder);
+
+                    // Match any temp frame folders
+                    if (name.Contains("_frames") ||
+                        name.Contains("_frames_processed"))
                     {
-                        Directory.Delete(folder, recursive: true);
-                        DebugPrint($"Deleted temp folder: {folder}");
-                    }
-                    catch (Exception ex)
-                    {
-                        DebugPrint($"Failed to delete {folder}: {ex.Message}");
+                        try
+                        {
+                            Directory.Delete(folder, recursive: true);
+                            DebugPrint($"Deleted temp folder: {folder}");
+                        }
+                        catch (Exception ex)
+                        {
+                            DebugPrint($"Failed to delete {folder}: {ex.Message}");
+                        }
                     }
                 }
             }
         }
+
+        private void ClampFrameRanges() //Simply clamp the frame start and end position to between 1 and the last frame. Does not prevent misordering of start and end.
+        {
+            if (mediaIndex == -1) { return; }
+
+            if (mediaHistory[mediaIndex] != null)
+            {
+                if (mediaHistory[mediaIndex].Type != MediaType.Image)
+                {
+                    int count = GetFrameCount(mediaHistory[mediaIndex]);
+
+                    //We don't have math.clamp in this version.
+                    numMinFrame.Value = Math.Max(1, Math.Min(numMinFrame.Value, count));
+                    numMaxFrame.Value = Math.Max(1, Math.Min(numMaxFrame.Value, count));
+                }
+                else //Image, just set the values to something sensible.
+                {
+                    numMinFrame.Value = 1;
+                    numMaxFrame.Value = 1;
+                }    
+            }
+        }
+
+        private bool CheckFrameRanges() //Check that will prevent processing if start frame is before end frame.
+        {
+            if (numMinFrame.Value <= numMaxFrame.Value)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
 
 
         //private void ShowMedia(MediaItem media)

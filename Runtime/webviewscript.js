@@ -331,7 +331,7 @@
     window.showMedia = path => {
         if (mediaElement) wrapper.removeChild(mediaElement);
         const ext = path.split('.').pop().toLowerCase();
-        if (['mp4','webm','ogg'].includes(ext)) { 
+        if (['mp4','webm','ogg','mov'].includes(ext)) { 
             mediaElement = document.createElement('video'); 
             mediaElement.src = path; 
             mediaElement.autoplay = true; 

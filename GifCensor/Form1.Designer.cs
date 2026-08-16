@@ -31,7 +31,6 @@ namespace GifCensor
         {
             this.components = new System.ComponentModel.Container();
             this.lblSize = new System.Windows.Forms.Label();
-            this.webView21 = new Microsoft.Web.WebView2.WinForms.WebView2();
             this.lblSel = new System.Windows.Forms.Label();
             this.txtPxlSize = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -61,15 +60,6 @@ namespace GifCensor
             this.colorDialog2 = new System.Windows.Forms.ColorDialog();
             this.panelChromaColor = new System.Windows.Forms.Panel();
             this.btnClear = new System.Windows.Forms.Button();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.btnShowRange = new System.Windows.Forms.Button();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.btnPurge = new System.Windows.Forms.Button();
-            this.checkReuseProcessed = new System.Windows.Forms.CheckBox();
             this.radioHSV = new System.Windows.Forms.RadioButton();
             this.txtHue = new System.Windows.Forms.TextBox();
             this.txtSat = new System.Windows.Forms.TextBox();
@@ -98,13 +88,15 @@ namespace GifCensor
             this.checkEncodeVid = new System.Windows.Forms.CheckBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.panelHSVPreview = new System.Windows.Forms.Panel();
-            ((System.ComponentModel.ISupportInitialize)(this.webView21)).BeginInit();
-            this.tabControl1.SuspendLayout();
-            this.tabPage1.SuspendLayout();
-            this.tabPage2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            this.tabPage3.SuspendLayout();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.btnShowRange = new System.Windows.Forms.Button();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.checkReuseProcessed = new System.Windows.Forms.CheckBox();
+            this.btnPurge = new System.Windows.Forms.Button();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.webView21 = new Microsoft.Web.WebView2.WinForms.WebView2();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarHue)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSat)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarLum)).BeginInit();
@@ -112,6 +104,12 @@ namespace GifCensor
             ((System.ComponentModel.ISupportInitialize)(this.numMaxFrame)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.tabPage2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+            this.tabPage1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.webView21)).BeginInit();
+            this.tabControl1.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblSize
@@ -124,21 +122,6 @@ namespace GifCensor
             this.lblSize.TabIndex = 1;
             this.lblSize.Text = "No media loaded";
             this.lblSize.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // webView21
-            // 
-            this.webView21.AllowExternalDrop = false;
-            this.webView21.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.webView21.CreationProperties = null;
-            this.webView21.DefaultBackgroundColor = System.Drawing.Color.White;
-            this.webView21.Location = new System.Drawing.Point(13, 20);
-            this.webView21.Margin = new System.Windows.Forms.Padding(20);
-            this.webView21.Name = "webView21";
-            this.webView21.Size = new System.Drawing.Size(1026, 394);
-            this.webView21.TabIndex = 4;
-            this.webView21.ZoomFactor = 1D;
             // 
             // lblSel
             // 
@@ -424,115 +407,6 @@ namespace GifCensor
             this.toolTip1.SetToolTip(this.btnClear, "Clear the image history and the current image");
             this.btnClear.UseVisualStyleBackColor = true;
             this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
-            // 
-            // tabControl1
-            // 
-            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Controls.Add(this.tabPage3);
-            this.tabControl1.Location = new System.Drawing.Point(12, 12);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(1060, 451);
-            this.tabControl1.TabIndex = 35;
-            // 
-            // tabPage1
-            // 
-            this.tabPage1.Controls.Add(this.webView21);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(1052, 425);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "Main";
-            this.tabPage1.UseVisualStyleBackColor = true;
-            // 
-            // tabPage2
-            // 
-            this.tabPage2.Controls.Add(this.pictureBox2);
-            this.tabPage2.Controls.Add(this.pictureBox1);
-            this.tabPage2.Controls.Add(this.btnShowRange);
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(1052, 425);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Per frame";
-            this.tabPage2.UseVisualStyleBackColor = true;
-            // 
-            // pictureBox2
-            // 
-            this.pictureBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBox2.Location = new System.Drawing.Point(618, 6);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(450, 407);
-            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox2.TabIndex = 2;
-            this.pictureBox2.TabStop = false;
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.pictureBox1.Location = new System.Drawing.Point(157, 6);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(450, 407);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 1;
-            this.pictureBox1.TabStop = false;
-            // 
-            // btnShowRange
-            // 
-            this.btnShowRange.Location = new System.Drawing.Point(12, 21);
-            this.btnShowRange.Name = "btnShowRange";
-            this.btnShowRange.Size = new System.Drawing.Size(125, 55);
-            this.btnShowRange.TabIndex = 0;
-            this.btnShowRange.Text = "Show frames at range";
-            this.btnShowRange.UseVisualStyleBackColor = true;
-            this.btnShowRange.Click += new System.EventHandler(this.btnShowRange_Click);
-            // 
-            // tabPage3
-            // 
-            this.tabPage3.Controls.Add(this.btnPurge);
-            this.tabPage3.Controls.Add(this.checkReuseProcessed);
-            this.tabPage3.Location = new System.Drawing.Point(4, 22);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(1052, 425);
-            this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "Settings, utilities";
-            this.tabPage3.UseVisualStyleBackColor = true;
-            // 
-            // btnPurge
-            // 
-            this.btnPurge.Location = new System.Drawing.Point(12, 57);
-            this.btnPurge.Name = "btnPurge";
-            this.btnPurge.Size = new System.Drawing.Size(125, 46);
-            this.btnPurge.TabIndex = 61;
-            this.btnPurge.Text = "Purge frame folders";
-            this.toolTip1.SetToolTip(this.btnPurge, "Deletes any extracted or processed frame folders, in the same folder as the curre" +
-        "ntly loaded file");
-            this.btnPurge.UseVisualStyleBackColor = true;
-            this.btnPurge.Click += new System.EventHandler(this.btnPurge_Click);
-            // 
-            // checkReuseProcessed
-            // 
-            this.checkReuseProcessed.AutoSize = true;
-            this.checkReuseProcessed.Checked = true;
-            this.checkReuseProcessed.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkReuseProcessed.Location = new System.Drawing.Point(12, 33);
-            this.checkReuseProcessed.Name = "checkReuseProcessed";
-            this.checkReuseProcessed.Size = new System.Drawing.Size(143, 17);
-            this.checkReuseProcessed.TabIndex = 60;
-            this.checkReuseProcessed.Text = "Resue processed frames";
-            this.toolTip1.SetToolTip(this.checkReuseProcessed, "Reuse the frames we already extracted, rather than rextracting all the frames aga" +
-        "in");
-            this.checkReuseProcessed.UseVisualStyleBackColor = true;
-            this.checkReuseProcessed.CheckedChanged += new System.EventHandler(this.checkReuseProcessed_CheckedChanged);
             // 
             // radioHSV
             // 
@@ -873,6 +747,119 @@ namespace GifCensor
             this.panelHSVPreview.TabIndex = 33;
             this.toolTip1.SetToolTip(this.panelHSVPreview, "Preview the HSV effect changes. Use the chroma eyedropper tool to pick a color.");
             // 
+            // tabPage2
+            // 
+            this.tabPage2.Controls.Add(this.btnPurge);
+            this.tabPage2.Controls.Add(this.checkReuseProcessed);
+            this.tabPage2.Controls.Add(this.pictureBox2);
+            this.tabPage2.Controls.Add(this.pictureBox1);
+            this.tabPage2.Controls.Add(this.btnShowRange);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(1052, 425);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "Animation utilities";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // btnShowRange
+            // 
+            this.btnShowRange.Location = new System.Drawing.Point(12, 21);
+            this.btnShowRange.Name = "btnShowRange";
+            this.btnShowRange.Size = new System.Drawing.Size(125, 55);
+            this.btnShowRange.TabIndex = 0;
+            this.btnShowRange.Text = "Show frames at range";
+            this.btnShowRange.UseVisualStyleBackColor = true;
+            this.btnShowRange.Click += new System.EventHandler(this.btnShowRange_Click);
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.pictureBox1.Location = new System.Drawing.Point(157, 6);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(450, 407);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox1.TabIndex = 1;
+            this.pictureBox1.TabStop = false;
+            // 
+            // pictureBox2
+            // 
+            this.pictureBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBox2.Location = new System.Drawing.Point(618, 6);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(450, 407);
+            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox2.TabIndex = 2;
+            this.pictureBox2.TabStop = false;
+            // 
+            // checkReuseProcessed
+            // 
+            this.checkReuseProcessed.AutoSize = true;
+            this.checkReuseProcessed.Checked = true;
+            this.checkReuseProcessed.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkReuseProcessed.Location = new System.Drawing.Point(15, 83);
+            this.checkReuseProcessed.Name = "checkReuseProcessed";
+            this.checkReuseProcessed.Size = new System.Drawing.Size(143, 17);
+            this.checkReuseProcessed.TabIndex = 62;
+            this.checkReuseProcessed.Text = "Resue processed frames";
+            this.toolTip1.SetToolTip(this.checkReuseProcessed, "Reuse the frames we already extracted, rather than rextracting all the frames aga" +
+        "in");
+            this.checkReuseProcessed.UseVisualStyleBackColor = true;
+            this.checkReuseProcessed.Click += new System.EventHandler(this.checkReuseProcessed_CheckedChanged);
+            // 
+            // btnPurge
+            // 
+            this.btnPurge.Location = new System.Drawing.Point(15, 107);
+            this.btnPurge.Name = "btnPurge";
+            this.btnPurge.Size = new System.Drawing.Size(125, 46);
+            this.btnPurge.TabIndex = 63;
+            this.btnPurge.Text = "Purge frame folders";
+            this.toolTip1.SetToolTip(this.btnPurge, "Deletes any extracted or processed frame folders, in the same folder as the curre" +
+        "ntly loaded file");
+            this.btnPurge.UseVisualStyleBackColor = true;
+            this.btnPurge.Click += new System.EventHandler(this.btnPurge_Click);
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.webView21);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(1052, 425);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "Main";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // webView21
+            // 
+            this.webView21.AllowExternalDrop = false;
+            this.webView21.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.webView21.CreationProperties = null;
+            this.webView21.DefaultBackgroundColor = System.Drawing.Color.White;
+            this.webView21.Location = new System.Drawing.Point(13, 20);
+            this.webView21.Margin = new System.Windows.Forms.Padding(20);
+            this.webView21.Name = "webView21";
+            this.webView21.Size = new System.Drawing.Size(1026, 394);
+            this.webView21.TabIndex = 4;
+            this.webView21.ZoomFactor = 1D;
+            // 
+            // tabControl1
+            // 
+            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Location = new System.Drawing.Point(12, 12);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(1060, 451);
+            this.tabControl1.TabIndex = 35;
+            // 
             // Form1
             // 
             this.AllowDrop = true;
@@ -895,19 +882,11 @@ namespace GifCensor
             this.Controls.Add(this.lblSize);
             this.MinimumSize = new System.Drawing.Size(1100, 720);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "GifCensor";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResizeEnd += new System.EventHandler(this.Form1_ResizeEnd);
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
-            ((System.ComponentModel.ISupportInitialize)(this.webView21)).EndInit();
-            this.tabControl1.ResumeLayout(false);
-            this.tabPage1.ResumeLayout(false);
-            this.tabPage2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            this.tabPage3.ResumeLayout(false);
-            this.tabPage3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarHue)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSat)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarLum)).EndInit();
@@ -917,6 +896,13 @@ namespace GifCensor
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            this.tabPage2.ResumeLayout(false);
+            this.tabPage2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+            this.tabPage1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.webView21)).EndInit();
+            this.tabControl1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -924,7 +910,6 @@ namespace GifCensor
 
         #endregion
         private System.Windows.Forms.Label lblSize;
-        private Microsoft.Web.WebView2.WinForms.WebView2 webView21;
         private System.Windows.Forms.Label lblSel;
         private System.Windows.Forms.TextBox txtPxlSize;
         private System.Windows.Forms.Label label1;
@@ -954,9 +939,6 @@ namespace GifCensor
         private System.Windows.Forms.ColorDialog colorDialog2;
         private System.Windows.Forms.Panel panelChromaColor;
         private System.Windows.Forms.Button btnClear;
-        private System.Windows.Forms.TabControl tabControl1;
-        private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.RadioButton radioHSV;
         private System.Windows.Forms.TextBox txtHue;
         private System.Windows.Forms.TextBox txtSat;
@@ -974,10 +956,7 @@ namespace GifCensor
         private System.Windows.Forms.Button btnClearMask;
         private System.Windows.Forms.Button btnFirst;
         private System.Windows.Forms.Button btnLast;
-        private System.Windows.Forms.Button btnShowRange;
         private System.Windows.Forms.CheckBox checkFrameRange;
-        private System.Windows.Forms.PictureBox pictureBox2;
-        private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.NumericUpDown numMinFrame;
         private System.Windows.Forms.NumericUpDown numMaxFrame;
         private System.Windows.Forms.Button btnFrameEnd;
@@ -986,11 +965,17 @@ namespace GifCensor
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Button btnStep;
         private System.Windows.Forms.CheckBox checkEncodeVid;
-        private System.Windows.Forms.TabPage tabPage3;
-        private System.Windows.Forms.Button btnPurge;
-        private System.Windows.Forms.CheckBox checkReuseProcessed;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Panel panelHSVPreview;
+        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.Button btnPurge;
+        private System.Windows.Forms.CheckBox checkReuseProcessed;
+        private System.Windows.Forms.PictureBox pictureBox2;
+        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Button btnShowRange;
+        private System.Windows.Forms.TabPage tabPage1;
+        private Microsoft.Web.WebView2.WinForms.WebView2 webView21;
+        private System.Windows.Forms.TabControl tabControl1;
     }
 }
 

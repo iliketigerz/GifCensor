@@ -67,6 +67,9 @@ namespace GifCensor
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.btnShowRange = new System.Windows.Forms.Button();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.btnPurge = new System.Windows.Forms.Button();
+            this.checkReuseProcessed = new System.Windows.Forms.CheckBox();
             this.radioHSV = new System.Windows.Forms.RadioButton();
             this.txtHue = new System.Windows.Forms.TextBox();
             this.txtSat = new System.Windows.Forms.TextBox();
@@ -93,16 +96,15 @@ namespace GifCensor
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.btnStep = new System.Windows.Forms.Button();
             this.checkEncodeVid = new System.Windows.Forms.CheckBox();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.btnPurge = new System.Windows.Forms.Button();
-            this.checkReuseProcessed = new System.Windows.Forms.CheckBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.panelHSVPreview = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.webView21)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.tabPage3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarHue)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSat)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarLum)).BeginInit();
@@ -110,7 +112,6 @@ namespace GifCensor
             ((System.ComponentModel.ISupportInitialize)(this.numMaxFrame)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
-            this.tabPage3.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblSize
@@ -170,11 +171,13 @@ namespace GifCensor
             // btnCensor
             // 
             this.btnCensor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnCensor.Enabled = false;
             this.btnCensor.Location = new System.Drawing.Point(993, 649);
             this.btnCensor.Name = "btnCensor";
             this.btnCensor.Size = new System.Drawing.Size(75, 23);
             this.btnCensor.TabIndex = 8;
             this.btnCensor.Text = "Process";
+            this.toolTip1.SetToolTip(this.btnCensor, "Apply the effect");
             this.btnCensor.UseVisualStyleBackColor = true;
             this.btnCensor.Click += new System.EventHandler(this.btnCensor_Click);
             // 
@@ -255,12 +258,13 @@ namespace GifCensor
             this.chkDispProcessed.AutoSize = true;
             this.chkDispProcessed.Checked = true;
             this.chkDispProcessed.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkDispProcessed.Enabled = false;
             this.chkDispProcessed.Location = new System.Drawing.Point(751, 466);
             this.chkDispProcessed.Name = "chkDispProcessed";
             this.chkDispProcessed.Size = new System.Drawing.Size(128, 17);
             this.chkDispProcessed.TabIndex = 17;
             this.chkDispProcessed.Text = "Display processed file";
+            this.toolTip1.SetToolTip(this.chkDispProcessed, "Show the processed file or not. Good for when you want to make many different edi" +
+        "ts to one file without stacking effects.");
             this.chkDispProcessed.UseVisualStyleBackColor = true;
             // 
             // radioStaticColor
@@ -271,6 +275,7 @@ namespace GifCensor
             this.radioStaticColor.Size = new System.Drawing.Size(91, 17);
             this.radioStaticColor.TabIndex = 18;
             this.radioStaticColor.Text = "Colored Noise";
+            this.toolTip1.SetToolTip(this.radioStaticColor, "RGB noise");
             this.radioStaticColor.UseVisualStyleBackColor = true;
             // 
             // richTextBox1
@@ -290,6 +295,7 @@ namespace GifCensor
             this.radioStaticMono.Size = new System.Drawing.Size(82, 17);
             this.radioStaticMono.TabIndex = 20;
             this.radioStaticMono.Text = "Static Noise";
+            this.toolTip1.SetToolTip(this.radioStaticMono, "Black and white noise");
             this.radioStaticMono.UseVisualStyleBackColor = true;
             // 
             // radioRGBS
@@ -331,11 +337,12 @@ namespace GifCensor
             // btnChromaCol
             // 
             this.btnChromaCol.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnChromaCol.Location = new System.Drawing.Point(308, 86);
+            this.btnChromaCol.Location = new System.Drawing.Point(301, 115);
             this.btnChromaCol.Name = "btnChromaCol";
-            this.btnChromaCol.Size = new System.Drawing.Size(44, 23);
+            this.btnChromaCol.Size = new System.Drawing.Size(52, 38);
             this.btnChromaCol.TabIndex = 26;
-            this.btnChromaCol.Text = "Col";
+            this.btnChromaCol.Text = "Color picker";
+            this.toolTip1.SetToolTip(this.btnChromaCol, "Pick the color from presets, or color codes");
             this.btnChromaCol.UseVisualStyleBackColor = true;
             this.btnChromaCol.Click += new System.EventHandler(this.btnChromaCol_Click);
             // 
@@ -343,7 +350,7 @@ namespace GifCensor
             // 
             this.checkChroma.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.checkChroma.AutoSize = true;
-            this.checkChroma.Location = new System.Drawing.Point(219, 90);
+            this.checkChroma.Location = new System.Drawing.Point(220, 90);
             this.checkChroma.Name = "checkChroma";
             this.checkChroma.Size = new System.Drawing.Size(82, 17);
             this.checkChroma.TabIndex = 27;
@@ -353,7 +360,7 @@ namespace GifCensor
             // txtChromaSens
             // 
             this.txtChromaSens.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtChromaSens.Location = new System.Drawing.Point(276, 111);
+            this.txtChromaSens.Location = new System.Drawing.Point(277, 159);
             this.txtChromaSens.Name = "txtChromaSens";
             this.txtChromaSens.Size = new System.Drawing.Size(76, 20);
             this.txtChromaSens.TabIndex = 28;
@@ -363,7 +370,7 @@ namespace GifCensor
             // 
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(216, 116);
+            this.label3.Location = new System.Drawing.Point(217, 164);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(54, 13);
             this.label3.TabIndex = 29;
@@ -372,21 +379,23 @@ namespace GifCensor
             // btnPickColor
             // 
             this.btnPickColor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnPickColor.Location = new System.Drawing.Point(277, 137);
+            this.btnPickColor.Location = new System.Drawing.Point(220, 115);
             this.btnPickColor.Name = "btnPickColor";
-            this.btnPickColor.Size = new System.Drawing.Size(75, 23);
+            this.btnPickColor.Size = new System.Drawing.Size(75, 38);
             this.btnPickColor.TabIndex = 30;
-            this.btnPickColor.Text = "btnPickColor";
+            this.btnPickColor.Text = "Eyedropper";
+            this.toolTip1.SetToolTip(this.btnPickColor, "Pick the color from the currently displayed media");
             this.btnPickColor.UseVisualStyleBackColor = true;
             this.btnPickColor.Click += new System.EventHandler(this.btnPickColor_Click);
             // 
             // btnSolidColor
             // 
-            this.btnSolidColor.Location = new System.Drawing.Point(146, 67);
+            this.btnSolidColor.Location = new System.Drawing.Point(108, 67);
             this.btnSolidColor.Name = "btnSolidColor";
-            this.btnSolidColor.Size = new System.Drawing.Size(58, 20);
+            this.btnSolidColor.Size = new System.Drawing.Size(96, 20);
             this.btnSolidColor.TabIndex = 31;
-            this.btnSolidColor.Text = "Color";
+            this.btnSolidColor.Text = "Pick Color";
+            this.toolTip1.SetToolTip(this.btnSolidColor, "Pick the color to fill the mask with");
             this.btnSolidColor.UseVisualStyleBackColor = true;
             this.btnSolidColor.Click += new System.EventHandler(this.btnSolidColor_Click);
             // 
@@ -398,7 +407,7 @@ namespace GifCensor
             // 
             this.panelChromaColor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.panelChromaColor.BackColor = System.Drawing.Color.Black;
-            this.panelChromaColor.Location = new System.Drawing.Point(220, 137);
+            this.panelChromaColor.Location = new System.Drawing.Point(304, 87);
             this.panelChromaColor.Name = "panelChromaColor";
             this.panelChromaColor.Size = new System.Drawing.Size(49, 25);
             this.panelChromaColor.TabIndex = 32;
@@ -412,6 +421,7 @@ namespace GifCensor
             this.btnClear.Size = new System.Drawing.Size(86, 23);
             this.btnClear.TabIndex = 33;
             this.btnClear.Text = "Clear Images";
+            this.toolTip1.SetToolTip(this.btnClear, "Clear the image history and the current image");
             this.btnClear.UseVisualStyleBackColor = true;
             this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
             // 
@@ -485,6 +495,45 @@ namespace GifCensor
             this.btnShowRange.UseVisualStyleBackColor = true;
             this.btnShowRange.Click += new System.EventHandler(this.btnShowRange_Click);
             // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.btnPurge);
+            this.tabPage3.Controls.Add(this.checkReuseProcessed);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage3.Size = new System.Drawing.Size(1052, 425);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "Settings, utilities";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // btnPurge
+            // 
+            this.btnPurge.Location = new System.Drawing.Point(12, 57);
+            this.btnPurge.Name = "btnPurge";
+            this.btnPurge.Size = new System.Drawing.Size(125, 46);
+            this.btnPurge.TabIndex = 61;
+            this.btnPurge.Text = "Purge frame folders";
+            this.toolTip1.SetToolTip(this.btnPurge, "Deletes any extracted or processed frame folders, in the same folder as the curre" +
+        "ntly loaded file");
+            this.btnPurge.UseVisualStyleBackColor = true;
+            this.btnPurge.Click += new System.EventHandler(this.btnPurge_Click);
+            // 
+            // checkReuseProcessed
+            // 
+            this.checkReuseProcessed.AutoSize = true;
+            this.checkReuseProcessed.Checked = true;
+            this.checkReuseProcessed.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkReuseProcessed.Location = new System.Drawing.Point(12, 33);
+            this.checkReuseProcessed.Name = "checkReuseProcessed";
+            this.checkReuseProcessed.Size = new System.Drawing.Size(143, 17);
+            this.checkReuseProcessed.TabIndex = 60;
+            this.checkReuseProcessed.Text = "Resue processed frames";
+            this.toolTip1.SetToolTip(this.checkReuseProcessed, "Reuse the frames we already extracted, rather than rextracting all the frames aga" +
+        "in");
+            this.checkReuseProcessed.UseVisualStyleBackColor = true;
+            this.checkReuseProcessed.CheckedChanged += new System.EventHandler(this.checkReuseProcessed_CheckedChanged);
+            // 
             // radioHSV
             // 
             this.radioHSV.AutoSize = true;
@@ -493,6 +542,8 @@ namespace GifCensor
             this.radioHSV.Size = new System.Drawing.Size(47, 17);
             this.radioHSV.TabIndex = 36;
             this.radioHSV.Text = "HSV";
+            this.toolTip1.SetToolTip(this.radioHSV, "Tip: Use the eyedropper tool on the part you want to change, the changed colour i" +
+        "s displayed here.");
             this.radioHSV.UseVisualStyleBackColor = true;
             // 
             // txtHue
@@ -609,6 +660,7 @@ namespace GifCensor
             this.txtAlpha.Size = new System.Drawing.Size(58, 20);
             this.txtAlpha.TabIndex = 48;
             this.txtAlpha.Text = "100";
+            this.toolTip1.SetToolTip(this.txtAlpha, "Overlays the effect onto the original image if set to less than 100%");
             // 
             // label8
             // 
@@ -618,6 +670,7 @@ namespace GifCensor
             this.label8.Size = new System.Drawing.Size(85, 13);
             this.label8.TabIndex = 49;
             this.label8.Text = "Effect Opacity %";
+            this.toolTip1.SetToolTip(this.label8, "Overlays the effect onto the original image if set to less than 100%");
             // 
             // btnClearMask
             // 
@@ -659,6 +712,7 @@ namespace GifCensor
             this.checkFrameRange.Size = new System.Drawing.Size(131, 17);
             this.checkFrameRange.TabIndex = 53;
             this.checkFrameRange.Text = "Apply effect to frames:";
+            this.toolTip1.SetToolTip(this.checkFrameRange, "Only apply the effect to the frames in this range");
             this.checkFrameRange.UseVisualStyleBackColor = true;
             this.checkFrameRange.CheckedChanged += new System.EventHandler(this.checkFrameRange_CheckedChanged);
             // 
@@ -692,7 +746,7 @@ namespace GifCensor
             this.numMaxFrame.Size = new System.Drawing.Size(50, 20);
             this.numMaxFrame.TabIndex = 57;
             this.numMaxFrame.Value = new decimal(new int[] {
-            100,
+            1,
             0,
             0,
             0});
@@ -700,27 +754,30 @@ namespace GifCensor
             // 
             // btnFrameStart
             // 
-            this.btnFrameStart.Location = new System.Drawing.Point(79, 115);
+            this.btnFrameStart.Location = new System.Drawing.Point(79, 120);
             this.btnFrameStart.Name = "btnFrameStart";
             this.btnFrameStart.Size = new System.Drawing.Size(75, 20);
             this.btnFrameStart.TabIndex = 59;
             this.btnFrameStart.Text = "Show start";
+            this.toolTip1.SetToolTip(this.btnFrameStart, "Show the frame in the viewing window");
             this.btnFrameStart.UseVisualStyleBackColor = true;
             this.btnFrameStart.Click += new System.EventHandler(this.btnFrameStart_Click);
             // 
             // btnFrameEnd
             // 
-            this.btnFrameEnd.Location = new System.Drawing.Point(79, 143);
+            this.btnFrameEnd.Location = new System.Drawing.Point(79, 148);
             this.btnFrameEnd.Name = "btnFrameEnd";
             this.btnFrameEnd.Size = new System.Drawing.Size(75, 20);
             this.btnFrameEnd.TabIndex = 60;
             this.btnFrameEnd.Text = "Show end";
+            this.toolTip1.SetToolTip(this.btnFrameEnd, "Show the frame in the viewing window");
             this.btnFrameEnd.UseVisualStyleBackColor = true;
             this.btnFrameEnd.Click += new System.EventHandler(this.btnFrameEnd_Click);
             // 
             // groupBox1
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.groupBox1.Controls.Add(this.panelHSVPreview);
             this.groupBox1.Controls.Add(this.trackBarHue);
             this.groupBox1.Controls.Add(this.txtPxlSize);
             this.groupBox1.Controls.Add(this.label1);
@@ -747,7 +804,7 @@ namespace GifCensor
             this.groupBox1.Controls.Add(this.txtHue);
             this.groupBox1.Controls.Add(this.txtLum);
             this.groupBox1.Controls.Add(this.txtSat);
-            this.groupBox1.Location = new System.Drawing.Point(28, 482);
+            this.groupBox1.Location = new System.Drawing.Point(16, 482);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(468, 190);
             this.groupBox1.TabIndex = 58;
@@ -781,11 +838,13 @@ namespace GifCensor
             // 
             // btnStep
             // 
-            this.btnStep.Location = new System.Drawing.Point(160, 116);
+            this.btnStep.Location = new System.Drawing.Point(158, 120);
             this.btnStep.Name = "btnStep";
-            this.btnStep.Size = new System.Drawing.Size(36, 47);
+            this.btnStep.Size = new System.Drawing.Size(41, 48);
             this.btnStep.TabIndex = 61;
             this.btnStep.Text = "Step";
+            this.toolTip1.SetToolTip(this.btnStep, "Increments the frame range by the current difference between the positions. Usefu" +
+        "l when you want to make lots of subsequent edits.");
             this.btnStep.UseVisualStyleBackColor = true;
             this.btnStep.Click += new System.EventHandler(this.btnStep_Click);
             // 
@@ -800,40 +859,19 @@ namespace GifCensor
             this.checkEncodeVid.Size = new System.Drawing.Size(92, 17);
             this.checkEncodeVid.TabIndex = 62;
             this.checkEncodeVid.Text = "Encode video";
+            this.toolTip1.SetToolTip(this.checkEncodeVid, "If unchecked, video frames will still be processed and stored, but the encoding s" +
+        "tep is skipped. Saves time when making multiple edits to a video.");
             this.checkEncodeVid.UseVisualStyleBackColor = true;
             // 
-            // tabPage3
+            // panelHSVPreview
             // 
-            this.tabPage3.Controls.Add(this.btnPurge);
-            this.tabPage3.Controls.Add(this.checkReuseProcessed);
-            this.tabPage3.Location = new System.Drawing.Point(4, 22);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(1052, 425);
-            this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "Settings, utilities";
-            this.tabPage3.UseVisualStyleBackColor = true;
-            // 
-            // btnPurge
-            // 
-            this.btnPurge.Location = new System.Drawing.Point(12, 57);
-            this.btnPurge.Name = "btnPurge";
-            this.btnPurge.Size = new System.Drawing.Size(125, 46);
-            this.btnPurge.TabIndex = 61;
-            this.btnPurge.Text = "Purge frame folders";
-            this.btnPurge.UseVisualStyleBackColor = true;
-            // 
-            // checkReuseProcessed
-            // 
-            this.checkReuseProcessed.AutoSize = true;
-            this.checkReuseProcessed.Checked = true;
-            this.checkReuseProcessed.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkReuseProcessed.Location = new System.Drawing.Point(12, 33);
-            this.checkReuseProcessed.Name = "checkReuseProcessed";
-            this.checkReuseProcessed.Size = new System.Drawing.Size(143, 17);
-            this.checkReuseProcessed.TabIndex = 60;
-            this.checkReuseProcessed.Text = "Resue processed frames";
-            this.checkReuseProcessed.UseVisualStyleBackColor = true;
+            this.panelHSVPreview.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelHSVPreview.BackColor = System.Drawing.Color.Black;
+            this.panelHSVPreview.Location = new System.Drawing.Point(219, 40);
+            this.panelHSVPreview.Name = "panelHSVPreview";
+            this.panelHSVPreview.Size = new System.Drawing.Size(49, 25);
+            this.panelHSVPreview.TabIndex = 33;
+            this.toolTip1.SetToolTip(this.panelHSVPreview, "Preview the HSV effect changes. Use the chroma eyedropper tool to pick a color.");
             // 
             // Form1
             // 
@@ -868,6 +906,8 @@ namespace GifCensor
             this.tabPage2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.tabPage3.ResumeLayout(false);
+            this.tabPage3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarHue)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSat)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarLum)).EndInit();
@@ -877,8 +917,6 @@ namespace GifCensor
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
-            this.tabPage3.ResumeLayout(false);
-            this.tabPage3.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -952,6 +990,7 @@ namespace GifCensor
         private System.Windows.Forms.Button btnPurge;
         private System.Windows.Forms.CheckBox checkReuseProcessed;
         private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.Panel panelHSVPreview;
     }
 }
 

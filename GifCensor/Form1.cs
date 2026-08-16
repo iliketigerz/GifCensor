@@ -323,7 +323,11 @@ namespace GifCensor
             mediaIndex = mediaHistory.Count - 1;
             ShowMedia();
             UpdateLabels();
+            ClampFrameRanges(true);
             UpdateStartEndFrame();
+
+            btnCensor.Enabled = true;
+
             Console.WriteLine("index " + mediaIndex + " / count" + mediaHistory.Count);
             GC.Collect(); // Force garbage collector
         }
@@ -531,6 +535,8 @@ namespace GifCensor
 
         private async void btnCensor_Click(object sender, EventArgs e) //Click to start processing
         {
+            if(mediaIndex == -1) { return; } //Shouldn't actually need this, we will disable the button if nothing loaded.
+
             //Check start and end frame ranges are in order, if we are using them.
             if (checkFrameRange.Checked)
             {
@@ -1526,7 +1532,8 @@ namespace GifCensor
 
                 ApplyHslAdjustments(ref h, ref s, ref l, int.Parse(txtHue.Text), int.Parse(txtSat.Text), int.Parse(txtLum.Text));
 
-                txtHue.BackColor = HslToColor(h, s, l);
+                //txtHue.BackColor = HslToColor(h, s, l);
+                panelHSVPreview.BackColor = HslToColor(h, s, l);
             }
 
         }
@@ -1585,10 +1592,6 @@ namespace GifCensor
 
         private async void btnmaskloadtest_Click(object sender, EventArgs e)
         {
-            //if (maskBitmap != null)
-            //{
-            //    await SendBitmapToJsAsync(maskBitmap);
-            //}
             LoadCachedMask();
         }
 
@@ -1598,11 +1601,17 @@ namespace GifCensor
             {
                 await SendBitmapToJsAsync(maskBitmap);
             }
+            else
+            {
+                MessageBox.Show("No mask to load.");
+            }
 
         }
 
         private async void btnInv_Click(object sender, EventArgs e)
         {
+            if (mediaIndex == -1) { return; }
+
             await webView21.CoreWebView2.ExecuteScriptAsync("window.sendMaskToHost();");
 
             await SendBitmapToJsAsync(InvertMask(maskBitmap));
@@ -1612,6 +1621,8 @@ namespace GifCensor
 
         public Bitmap InvertMask(Bitmap source)
         {
+            if (source == null) { return null; }
+
             Color maskColor = new Color();
             maskColor = Color.Red;
             // Ensure writable 32bpp ARGB
@@ -1658,8 +1669,9 @@ namespace GifCensor
 
         private async void btnClearMask_Click(object sender, EventArgs e)
         {
+            if (mediaIndex == -1) { return; }
             await webView21.CoreWebView2.ExecuteScriptAsync("window.sendMaskToHost();"); //get current mask
-
+            
             Bitmap emptyBitmap = new Bitmap(maskBitmap.Width, maskBitmap.Height, maskBitmap.PixelFormat);
 
             await SendBitmapToJsAsync(emptyBitmap);
@@ -1786,6 +1798,8 @@ namespace GifCensor
 
         private async Task UpdateStartEndFrame()
         {
+            if (mediaIndex == -1) { return; }
+
             // Get input video
             string videoPath = mediaHistory[mediaIndex].Path;
             if (!File.Exists(videoPath))
@@ -1986,6 +2000,8 @@ namespace GifCensor
 
         private async void btnFrameStart_Click(object sender, EventArgs e)
         {
+            if (mediaIndex == -1) { return; }
+
             if (!updatedStartEnd)
             {
                 await UpdateStartEndFrame();
@@ -2005,6 +2021,8 @@ namespace GifCensor
 
         private async void btnFrameEnd_Click(object sender, EventArgs e)
         {
+            if (mediaIndex == -1) { return; }
+
             if (!updatedStartEnd)
             {
                 await UpdateStartEndFrame();
@@ -2047,7 +2065,7 @@ namespace GifCensor
 
         private void numMinFrame_ValueChanged(object sender, EventArgs e)
         {
-            ClampFrameRanges();
+            ClampFrameRanges(false);
 
             if (numMinFrame.Value > numMaxFrame.Value)
             {
@@ -2093,7 +2111,7 @@ namespace GifCensor
 
         private void numMaxFrame_ValueChanged(object sender, EventArgs e)
         {
-            ClampFrameRanges();
+            ClampFrameRanges(false);
 
             if (numMaxFrame.Value < numMinFrame.Value)
             {
@@ -2182,7 +2200,7 @@ namespace GifCensor
             }
         }
 
-        private void ClampFrameRanges() //Simply clamp the frame start and end position to between 1 and the last frame. Does not prevent misordering of start and end.
+        private void ClampFrameRanges(bool setEndFrame) //Simply clamp the frame start and end position to between 1 and the last frame. Does not prevent misordering of start and end.
         {
             if (mediaIndex == -1) { return; }
 
@@ -2194,7 +2212,15 @@ namespace GifCensor
 
                     //We don't have math.clamp in this version.
                     numMinFrame.Value = Math.Max(1, Math.Min(numMinFrame.Value, count));
-                    numMaxFrame.Value = Math.Max(1, Math.Min(numMaxFrame.Value, count));
+
+                    if (!setEndFrame) //Lets us reuse the method for initialising the ranges.
+                    {
+                        numMaxFrame.Value = Math.Max(1, Math.Min(numMaxFrame.Value, count));
+                    }
+                    else
+                    {
+                        numMaxFrame.Value = count;
+                    }
                 }
                 else //Image, just set the values to something sensible.
                 {
@@ -2213,6 +2239,11 @@ namespace GifCensor
 
             return false;
         }
+
+       
+     
+
+
 
 
 

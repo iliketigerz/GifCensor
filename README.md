@@ -1,7 +1,7 @@
 # GifCensor
 Desktop program that lets you easily mess with different censoring effects, for images, gifs and videos. I had a lot of fun messing with ezgif's censor function but wanted more features.
 
-![Example](\docs\BBB_apple.gif)
+![Example gif](https://github.com/iliketigerz/GifCensor/blob/main/docs/BBB_apple_chroma_pixel.gif)
 
 Effects
 ======================

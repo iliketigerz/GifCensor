@@ -85,3 +85,4 @@ PublishProfiles/
 *.dmp # Crash dumps
 
 .gitignore.bak
+GifCensor/GifCensorExt_TemporaryKey.pfx

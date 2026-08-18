@@ -617,27 +617,36 @@ namespace GifCensor
             }
             else if (media.Type == MediaType.Image)
             {
-                //Console.WriteLine($"{gifFrames.Length} frames extracted");
-                //DebugPrint($"{gifFrames.Length} frames extracted");
-                //media.Frames[0].Save("E:/temptest/program/test_diff_files/test_direct_output_pre.png", ImageFormat.Png); //Test
-
                 processedFrames = await Task.Run(() => ProcessFrames(media.Frames)); //Async method, go and process the frames in the background
-
-
-                //processedFrames[0].Save("E:/temptest/program/test_diff_files/test_direct_output_post.png", ImageFormat.Png); //Test
 
                 processedFrames[0] = FixFormatting(processedFrames[0]); //Lets test this!
 
                 DebugPrint($"saving image");
                 path = AppendFileNumberIfExists(path);
-                //Console.WriteLine($"System.Drawing.Imaging.PixelFormat: {gifFrames[0].System.Drawing.Imaging.PixelFormat}");
-                //gifFrames[0].Save("E:/temptest/program/test gifs/test_direct_output.png", ImageFormat.Png); //Test
 
-                //path = $"{webView21.Source}".Replace("file:///", ""); //Get path from the webview.... yuck?
+                string extension = Path.GetExtension(path).ToLowerInvariant();
 
-                processedFrames[0].Save(path, ImageFormat.Png);
+                ImageFormat format;
 
-                //Console.WriteLine($"Complete.");
+                switch (extension)
+                {
+                    case ".jpg":
+                    case ".jpeg":
+                        format = ImageFormat.Jpeg;
+                        break;
+
+                    case ".bmp":
+                        format = ImageFormat.Bmp;
+                        break;
+
+                    case ".png":
+                    default:
+                        format = ImageFormat.Png;
+                        break;
+                }
+
+                processedFrames[0].Save(path, format);
+
                 DebugPrint($"Complete.");
 
             }

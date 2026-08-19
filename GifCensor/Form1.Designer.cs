@@ -870,7 +870,7 @@ namespace GifCensor
             this.lblVersion.Name = "lblVersion";
             this.lblVersion.Size = new System.Drawing.Size(28, 13);
             this.lblVersion.TabIndex = 63;
-            this.lblVersion.Text = "v1.0";
+            this.lblVersion.Text = "v1.1";
             this.lblVersion.Click += new System.EventHandler(this.lblVersion_Click);
             // 
             // Form1

@@ -37,10 +37,10 @@ Supported file formats (TBC)
 
 Quick tutorial
 ======================
-Drag your file onto the application, anywhere except the large box in the middle of the screen. You can then set up your mask on the image, Left click to paint, right click to erase. Middle mouse to pan and use the scroll wheel to zoom
+Drag your file onto the application. You can then set up your mask on the image, Left click to paint, right click to erase. Middle mouse to pan and use the scroll wheel to zoom
 
 Once your mask is done, pick an effect from the lower left menu. Click "process" in the bottom right corner to apply the effect. 
 
-The processed media will then be displayed in the window. It will appear in the same directory as the source file, but with "_output" appended to the file name. Subsequent edits will appear with "_output(n)". You can jump forwards and backwards through a list of your processed files with the buttons just above the process button, useful if you want to retry an edit if the settings weren't quite right or start again. You can clear this list with the "Clear images" button.
+The processed media will then be displayed in the window. It will appear in the same directory as the source file, but with "_output" appended to the file name. You can jump forwards and backwards through a list of your processed files with the buttons just above the process button.
 
 For full information, please read the [wiki](https://github.com/iliketigerz/GifCensor/wiki)!

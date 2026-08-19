@@ -103,11 +103,21 @@ namespace GifCensor
             await webView21.EnsureCoreWebView2Async(env);
             webView2Initialized = true;
 
-            // Optionally load a default gif:
-            //ShowGif("E:/temptest/program/test gifs/8f71b48b80771d8290589f4f57711de9.gif");
+            webView21.CoreWebView2.NewWindowRequested += CoreWebView21_NewWindowRequested; // Handler to intercept native dragdrop behaviour
+            webView21.CoreWebView2.NavigationCompleted += CoreWebView2_NavigationCompleted;  // add overlay JS after navigation completes
+        }
 
-            // add overlay JS after navigation completes
-            webView21.CoreWebView2.NavigationCompleted += CoreWebView2_NavigationCompleted;
+        private async void CoreWebView21_NewWindowRequested( //Handles native dragdrop event, which was causing file to open in new window...
+    object sender,
+    CoreWebView2NewWindowRequestedEventArgs e)
+        {
+            if (Uri.TryCreate(e.Uri, UriKind.Absolute, out Uri uri) && uri.IsFile)
+            {
+                e.Handled = true;
+
+                string filePath = uri.LocalPath;
+                await ImportMediaFileAsync(filePath);
+            }
         }
 
 
@@ -361,7 +371,7 @@ namespace GifCensor
 
         private int GetFrameCount(MediaItem media)
         {
-            if (media != null) 
+            if (media != null)
             {
                 if (media.Type == MediaType.Gif)
                 {
@@ -408,7 +418,7 @@ namespace GifCensor
 
                     ShellFile shellFile = ShellFile.FromFilePath(media.Path);
                     fps = (double)(shellFile.Properties.System.Video.FrameRate.Value / 1000);
-                   
+
 
                     float dur = (float)shellFile.Properties.System.Media.Duration.Value;
                     dur = dur / 10000000;
@@ -531,11 +541,11 @@ namespace GifCensor
 
 
 
-        
+
 
         private async void btnCensor_Click(object sender, EventArgs e) //Click to start processing
         {
-            if(mediaIndex == -1) { return; } //Shouldn't actually need this, we will disable the button if nothing loaded.
+            if (mediaIndex == -1) { return; } //Shouldn't actually need this, we will disable the button if nothing loaded.
 
             //Check start and end frame ranges are in order, if we are using them.
             if (checkFrameRange.Checked)
@@ -548,7 +558,7 @@ namespace GifCensor
                     return;
                 }
             }
-            
+
 
             btnCensor.Enabled = false;
 
@@ -667,7 +677,7 @@ namespace GifCensor
                 // Determine raw frames folder
                 string rawFramesDir = GetRawFramesFolder(media.Path);
                 Console.WriteLine("raw frames dir " + rawFramesDir);
-               
+
                 if (!Directory.Exists(rawFramesDir))
                 {
                     Directory.CreateDirectory(rawFramesDir);
@@ -686,7 +696,7 @@ namespace GifCensor
                 string inputFramesDir = rawFramesDir; //Set input frames directory to the unprocessed frames folder
 
                 if (checkReuseProcessed.Checked) //Then check if we need it
-                   // if (checkReuseProcessed.Checked && currentIndex > 0) //Then check if we need it
+                                                 // if (checkReuseProcessed.Checked && currentIndex > 0) //Then check if we need it
                 {
 
                     //string prevProcessed = GetProcessedFramesFolder(media.Path, currentIndex);
@@ -702,7 +712,7 @@ namespace GifCensor
                 }
                 else //Extract frames for the first time, to path/name_frames
                 {
-                    
+
                 }
 
                 // Determine output frames folder
@@ -982,7 +992,7 @@ namespace GifCensor
 
                 maskRef.Dispose();
             }
-            
+
 
             // ----------------------------
             // FRAME RANGE HANDLING
@@ -1403,9 +1413,9 @@ namespace GifCensor
             GC.Collect();
         }
 
-      
-       
-        
+
+
+
         private void Form1_ResizeEnd(object sender, EventArgs e)
         {
             //ShowGif();
@@ -1680,7 +1690,7 @@ namespace GifCensor
         {
             if (mediaIndex == -1) { return; }
             await webView21.CoreWebView2.ExecuteScriptAsync("window.sendMaskToHost();"); //get current mask
-            
+
             Bitmap emptyBitmap = new Bitmap(maskBitmap.Width, maskBitmap.Height, maskBitmap.PixelFormat);
 
             await SendBitmapToJsAsync(emptyBitmap);
@@ -1715,7 +1725,7 @@ namespace GifCensor
                 //txtMinFrame.Enabled = false;
                 //txtMaxFrame.Enabled = false;
             }
-            
+
         }
 
         //private async void btnShowRange_Click(object sender, EventArgs e)
@@ -1883,7 +1893,7 @@ namespace GifCensor
             updatedStartEnd = true;
         }
 
-       
+
 
         private int ExtractProcessedIndex(string folderPath, string baseName)
         {
@@ -2087,7 +2097,7 @@ namespace GifCensor
                 toolTip1.SetToolTip(numMinFrame, null);
             }
 
-            
+
 
             //This code allowed the end position to be bumped around if we tried to set the start too high, but this could make editing annoying if you wanted to set a specific value.
             //if (numMinFrame.Value < 1) //Start frame cannot be before 1!
@@ -2235,7 +2245,7 @@ namespace GifCensor
                 {
                     numMinFrame.Value = 1;
                     numMaxFrame.Value = 1;
-                }    
+                }
             }
         }
 
@@ -2253,13 +2263,6 @@ namespace GifCensor
         {
             System.Diagnostics.Process.Start("https://github.com/iliketigerz/GifCensor");
         }
-
-
-
-
-
-
-
 
         //private void ShowMedia(MediaItem media)
         //{
@@ -2282,10 +2285,3 @@ namespace GifCensor
         //}
     }
 }
-
-
-
-
-
-
-

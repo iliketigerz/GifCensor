@@ -288,6 +288,9 @@ namespace GifCensor
             if (files != null && files.Length > 0)
             {
                 await ImportMediaFileAsync(files[0]); // reuse helper
+
+                ClampFrameRanges(true); //Clamp start and end frame to end of file on import
+                UpdateStartEndFrame();  //Retrieve those frames. TODO. Only do this if we actually need them? Is this already taken care of somewhere?
             }
 
         }
@@ -333,8 +336,8 @@ namespace GifCensor
             mediaIndex = mediaHistory.Count - 1;
             ShowMedia();
             UpdateLabels();
-            ClampFrameRanges(true);
-            UpdateStartEndFrame();
+            //ClampFrameRanges(true); //Moved out to allow better control.
+            //UpdateStartEndFrame();
 
             btnCensor.Enabled = true;
 
@@ -545,6 +548,7 @@ namespace GifCensor
 
         private async void btnCensor_Click(object sender, EventArgs e) //Click to start processing
         {
+            GC.Collect();
             if (mediaIndex == -1) { return; } //Shouldn't actually need this, we will disable the button if nothing loaded.
 
             //Check start and end frame ranges are in order, if we are using them.
@@ -608,6 +612,7 @@ namespace GifCensor
                 //Console.WriteLine($"{gifFrames.Length} frames extracted");
                 //DebugPrint($"{gifFrames.Length} frames extracted");
 
+                DebugPrint($"Processing frames GIF...");
                 processedFrames = await Task.Run(() => ProcessFrames(media.Frames)); //Async method, go and process the frames in the background
 
                 DebugPrint($"Encoding GIF...");
@@ -720,7 +725,7 @@ namespace GifCensor
                 if (!Directory.Exists(processedDir))
                     Directory.CreateDirectory(processedDir);
 
-                DebugPrint($"Processing frames → {processedDir}");
+                DebugPrint($"Processing frames: {processedDir}");
 
                 // Load frames
                 string[] frameFiles = Directory.GetFiles(inputFramesDir, "*.png")
@@ -737,6 +742,7 @@ namespace GifCensor
                 }
 
                 // Process frames
+                
                 for (int i = 0; i < totalFrames; i++)
                 {
                     string srcPath = frameFiles[i];
@@ -1313,6 +1319,8 @@ namespace GifCensor
             {
                 mediaIndex--;
                 ShowMedia();
+
+                updatedStartEnd = false; //invalidate frame range images
             }
             else
             {
@@ -1329,6 +1337,8 @@ namespace GifCensor
             {
                 mediaIndex++;
                 ShowMedia();
+
+                updatedStartEnd = false; //invalidate frame range images
             }
             else
             {
@@ -1705,12 +1715,16 @@ namespace GifCensor
         {
             mediaIndex = 0;
             ShowMedia();
+
+            updatedStartEnd = false; //invalidate frame range images
         }
 
         private void btnLast_Click(object sender, EventArgs e)
         {
             mediaIndex = mediaHistory.Count - 1;
             ShowMedia();
+
+            updatedStartEnd = false; //invalidate frame range images
         }
 
         private void checkFrameRange_CheckedChanged(object sender, EventArgs e)
@@ -1889,7 +1903,7 @@ namespace GifCensor
             //await webView21.CoreWebView2.ExecuteScriptAsync(script);
             //Console.WriteLine("index " + mediaIndex + " / count" + mediaHistory.Count);
 
-            //DebugPrint($"Displayed frames {minFrame} and {maxFrame}");
+            //DebugPrint($"Extracted frames {minFrame} and {maxFrame}");
             updatedStartEnd = true;
         }
 
@@ -2021,7 +2035,7 @@ namespace GifCensor
         {
             if (mediaIndex == -1) { return; }
 
-            if (!updatedStartEnd)
+            if (!updatedStartEnd) //Don't try and get new frames if we already have them loaded
             {
                 await UpdateStartEndFrame();
             }
@@ -2095,9 +2109,10 @@ namespace GifCensor
             {
                 numMinFrame.BackColor = default;
                 toolTip1.SetToolTip(numMinFrame, null);
+
             }
 
-
+            updatedStartEnd = false;
 
             //This code allowed the end position to be bumped around if we tried to set the start too high, but this could make editing annoying if you wanted to set a specific value.
             //if (numMinFrame.Value < 1) //Start frame cannot be before 1!
@@ -2142,6 +2157,8 @@ namespace GifCensor
                 numMaxFrame.BackColor = default;
                 toolTip1.SetToolTip(numMaxFrame, null);
             }
+
+            updatedStartEnd = false;
 
             //if (mediaHistory[mediaIndex] != null) //This code allowed the start position to be bumped around if we tried to set the end too low, but this could make editing annoying if you wanted to set a specific value.
             //{
@@ -2219,7 +2236,7 @@ namespace GifCensor
             }
         }
 
-        private void ClampFrameRanges(bool setEndFrame) //Simply clamp the frame start and end position to between 1 and the last frame. Does not prevent misordering of start and end.
+        private void ClampFrameRanges(bool setEndFrame) //Simply clamp the frame start and end position to between 1 and the last frame. Does not prevent misordering of start and end. if "setEndFrame" is true, the end position is set to the end, otherwise it is left.
         {
             if (mediaIndex == -1) { return; }
 

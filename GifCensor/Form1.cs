@@ -30,7 +30,7 @@ namespace GifCensor
 {
     public partial class Form1 : Form
     {
-        
+
         enum MediaType { Image, Gif, Video }
 
         class MediaItem
@@ -560,10 +560,59 @@ namespace GifCensor
             }
         }
 
+        private async Task<string> ProcessFlowEffect(MediaItem inputMedia)
+        {
+            string returnPath = null;
 
+            if (inputMedia.Type == MediaType.Image)
+            {
+                Debug.Print("Error, cannot be applied to images."); //Todo, prevent the user from reaching this point!
+                DebugPrint("Error, cannot be applied to images.");
+            }
+            else if (inputMedia.Type == MediaType.Gif)
+            {
+
+                if (radioReverse.Checked)
+                {
+                    returnPath = AppendFileNumberIfExists(inputMedia.Path);
+                    await Task.Run(() => MakeGif(inputMedia.Frames.Reverse().ToArray(), inputMedia.FrameDelay, returnPath)); //async? Make a gif from the frames
+                }
+                else if (radioBoomerang.Checked)
+                {
+                    returnPath = AppendFileNumberIfExists(inputMedia.Path);
+                    Image[] frames = inputMedia.Frames.Concat(inputMedia.Frames.Reverse()).Select(x => new Bitmap(x)).ToArray();
+
+                    await Task.Run(() => MakeGif(frames, inputMedia.FrameDelay, returnPath)); //async? Make a gif from the frames
+
+                }
+                else if (radioBoomerangDrop.Checked)
+                {
+                    returnPath = AppendFileNumberIfExists(inputMedia.Path);
+                    Image[] frames = inputMedia.Frames.Concat(inputMedia.Frames.Reverse().Skip(1).Take(inputMedia.Frames.Length - 2)).Select(x => new Bitmap(x)).ToArray();
+
+                    await Task.Run(() => MakeGif(frames, inputMedia.FrameDelay, returnPath)); //async? Make a gif from the frames
+
+                }
+                //DebugPrint($"Processing frames GIF...");
+                //processedFrames = await Task.Run(() => ProcessFrameEffects(inputMedia.Frames)); //Async method, go and process the frames in the background
+
+                //DebugPrint($"Encoding GIF...");
+
+                ////Stopwatch stopwatch = new Stopwatch();
+                ////stopwatch.Start();
+
+                //returnPath = AppendFileNumberIfExists(inputMedia.Path);
+
+                //await Task.Run(() => MakeGif(processedFrames, inputMedia.FrameDelay, returnPath)); //async? Make a gif from the frames
+                //DebugPrint($"Complete.");
+            }
+
+
+
+            return returnPath;
+        }
         private async Task<string> ProcessEffect(MediaItem inputMedia)
         {
-
             if (!CheckFrameRanges())
             {
                 MessageBox.Show("Start frame cannot be after end frame.");
@@ -595,7 +644,7 @@ namespace GifCensor
             //
 
             string returnPath = null;
-           
+
             //path = media.Path;
 
             Console.WriteLine("media path" + inputMedia.Path);
@@ -782,7 +831,7 @@ namespace GifCensor
 
             return returnPath;
         }
-    
+
 
         private async void btnProcess_Click(object sender, EventArgs e) //Click to start processing
         {
@@ -790,14 +839,42 @@ namespace GifCensor
             GC.Collect();
             if (mediaIndex == -1) { return; } //Shouldn't actually need this, we will disable the button if nothing loaded.
 
-            string returnString = await ProcessEffect(mediaHistory[mediaIndex]);
+
+            string returnString = null;
+
+            string operationType = "null";
+
+            foreach (Control control in animFlowBox.Controls) //Check if we should apply an animation flow type effect
+            {
+                if (control is RadioButton radioButton)
+                {
+                    if (radioButton.Checked)
+                    {
+                        operationType = "animFlow";
+                    }
+                }
+            }
+
+
+            switch (operationType)
+            {
+                case "animFlow":
+                    returnString = await ProcessFlowEffect(mediaHistory[mediaIndex]); //TODO
+                    break;
+
+                default:
+                    returnString = await ProcessEffect(mediaHistory[mediaIndex]);
+                    break;
+            }
+
+
 
             if (returnString == null)
             {
                 MessageBox.Show("Fatal error occured");
                 return;
             }
-            
+
             Console.WriteLine("filepath " + returnString);
             DebugPrint($"Filepath " + returnString);
 
@@ -878,7 +955,7 @@ namespace GifCensor
         private Bitmap GenerateChromaKeyMask(Image frame, Bitmap sourceMask)
         {
             Bitmap frameMask = null;
-            
+
             Color chromaColor = colorDialog1.Color;
             int tolerance = int.Parse(txtChromaSens.Text);
 
@@ -893,77 +970,77 @@ namespace GifCensor
                 g.DrawImage(sourceMask, 0, 0, sourceMask.Width, sourceMask.Height);
             }
 
-           
-                Bitmap srcBmp = (Bitmap)frame; // READ ONLY
-                Bitmap mask = new Bitmap(srcBmp.Width, srcBmp.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
-                BitmapData bmpData = srcBmp.LockBits(
-                    new Rectangle(0, 0, srcBmp.Width, srcBmp.Height),
-                    ImageLockMode.ReadOnly,
-                    System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            Bitmap srcBmp = (Bitmap)frame; // READ ONLY
+            Bitmap mask = new Bitmap(srcBmp.Width, srcBmp.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
-                BitmapData maskData = mask.LockBits(
-                    new Rectangle(0, 0, mask.Width, mask.Height),
-                    ImageLockMode.WriteOnly,
-                    System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            BitmapData bmpData = srcBmp.LockBits(
+                new Rectangle(0, 0, srcBmp.Width, srcBmp.Height),
+                ImageLockMode.ReadOnly,
+                System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
-                BitmapData refData = maskRef.LockBits(
-                    new Rectangle(0, 0, maskRef.Width, maskRef.Height),
-                    ImageLockMode.ReadOnly,
-                    System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            BitmapData maskData = mask.LockBits(
+                new Rectangle(0, 0, mask.Width, mask.Height),
+                ImageLockMode.WriteOnly,
+                System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
-                unsafe
+            BitmapData refData = maskRef.LockBits(
+                new Rectangle(0, 0, maskRef.Width, maskRef.Height),
+                ImageLockMode.ReadOnly,
+                System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+            unsafe
+            {
+                byte* bmpPtr = (byte*)bmpData.Scan0;
+                byte* maskPtr = (byte*)maskData.Scan0;
+                byte* refPtr = (byte*)refData.Scan0;
+
+                int bytesPerPixel = 4;
+                int stride = bmpData.Stride;
+
+                for (int y = 0; y < srcBmp.Height; y++)
                 {
-                    byte* bmpPtr = (byte*)bmpData.Scan0;
-                    byte* maskPtr = (byte*)maskData.Scan0;
-                    byte* refPtr = (byte*)refData.Scan0;
-
-                    int bytesPerPixel = 4;
-                    int stride = bmpData.Stride;
-
-                    for (int y = 0; y < srcBmp.Height; y++)
+                    for (int x = 0; x < srcBmp.Width; x++)
                     {
-                        for (int x = 0; x < srcBmp.Width; x++)
+                        byte* srcPx = bmpPtr + y * stride + x * bytesPerPixel;
+                        byte r = srcPx[2], g = srcPx[1], b = srcPx[0];
+
+                        byte* refPx = refPtr + y * stride + x * bytesPerPixel;
+                        bool inOriginalMask = refPx[3] >= 128;
+
+                        byte* dstPx = maskPtr + y * stride + x * bytesPerPixel;
+
+                        if (!inOriginalMask)
                         {
-                            byte* srcPx = bmpPtr + y * stride + x * bytesPerPixel;
-                            byte r = srcPx[2], g = srcPx[1], b = srcPx[0];
+                            dstPx[0] = dstPx[1] = dstPx[2] = dstPx[3] = 0;
+                            continue;
+                        }
 
-                            byte* refPx = refPtr + y * stride + x * bytesPerPixel;
-                            bool inOriginalMask = refPx[3] >= 128;
+                        bool similar =
+                            Math.Abs(r - chromaColor.R) <= tolerance &&
+                            Math.Abs(g - chromaColor.G) <= tolerance &&
+                            Math.Abs(b - chromaColor.B) <= tolerance;
 
-                            byte* dstPx = maskPtr + y * stride + x * bytesPerPixel;
-
-                            if (!inOriginalMask)
-                            {
-                                dstPx[0] = dstPx[1] = dstPx[2] = dstPx[3] = 0;
-                                continue;
-                            }
-
-                            bool similar =
-                                Math.Abs(r - chromaColor.R) <= tolerance &&
-                                Math.Abs(g - chromaColor.G) <= tolerance &&
-                                Math.Abs(b - chromaColor.B) <= tolerance;
-
-                            if (similar)
-                            {
-                                dstPx[0] = 255;
-                                dstPx[1] = 0;
-                                dstPx[2] = 0;
-                                dstPx[3] = 255;
-                            }
-                            else
-                            {
-                                dstPx[0] = dstPx[1] = dstPx[2] = dstPx[3] = 0;
-                            }
+                        if (similar)
+                        {
+                            dstPx[0] = 255;
+                            dstPx[1] = 0;
+                            dstPx[2] = 0;
+                            dstPx[3] = 255;
+                        }
+                        else
+                        {
+                            dstPx[0] = dstPx[1] = dstPx[2] = dstPx[3] = 0;
                         }
                     }
                 }
+            }
 
-                srcBmp.UnlockBits(bmpData);
-                mask.UnlockBits(maskData);
-                maskRef.UnlockBits(refData);
+            srcBmp.UnlockBits(bmpData);
+            mask.UnlockBits(maskData);
+            maskRef.UnlockBits(refData);
 
-               
+
 
             return frameMask;
 
@@ -1023,9 +1100,9 @@ namespace GifCensor
 
             if (checkChroma.Checked && maskBitmap != null)
             {
-               mask = GenerateChromaKeyMask(frame, maskBitmap);
+                mask = GenerateChromaKeyMask(frame, maskBitmap);
             }
-            
+
             // Apply effect
             Bitmap output;
 
@@ -2185,6 +2262,8 @@ namespace GifCensor
                 }
             }
         }
+
+
 
         //private void ShowMedia(MediaItem media)
         //{

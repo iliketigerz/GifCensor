@@ -99,6 +99,7 @@ namespace GifCensor
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.animFlowBox = new System.Windows.Forms.GroupBox();
+            this.radioBoomerangDrop = new System.Windows.Forms.RadioButton();
             this.radioBoomerang = new System.Windows.Forms.RadioButton();
             this.radioReverse = new System.Windows.Forms.RadioButton();
             this.lblVersion = new System.Windows.Forms.Label();
@@ -881,6 +882,7 @@ namespace GifCensor
             // 
             // animFlowBox
             // 
+            this.animFlowBox.Controls.Add(this.radioBoomerangDrop);
             this.animFlowBox.Controls.Add(this.radioBoomerang);
             this.animFlowBox.Controls.Add(this.radioReverse);
             this.animFlowBox.Location = new System.Drawing.Point(180, 99);
@@ -889,6 +891,19 @@ namespace GifCensor
             this.animFlowBox.TabIndex = 1;
             this.animFlowBox.TabStop = false;
             this.animFlowBox.Text = "Animation Flow";
+            // 
+            // radioBoomerangDrop
+            // 
+            this.radioBoomerangDrop.AutoCheck = false;
+            this.radioBoomerangDrop.AutoSize = true;
+            this.radioBoomerangDrop.Location = new System.Drawing.Point(6, 65);
+            this.radioBoomerangDrop.Name = "radioBoomerangDrop";
+            this.radioBoomerangDrop.Size = new System.Drawing.Size(191, 17);
+            this.radioBoomerangDrop.TabIndex = 4;
+            this.radioBoomerangDrop.TabStop = true;
+            this.radioBoomerangDrop.Text = "Boomerang (Drop duplicate frames)";
+            this.radioBoomerangDrop.UseVisualStyleBackColor = true;
+            this.radioBoomerangDrop.Click += new System.EventHandler(this.RadioBtnNonReq_Click);
             // 
             // radioBoomerang
             // 
@@ -1053,6 +1068,7 @@ namespace GifCensor
         private System.Windows.Forms.RadioButton radioReverse;
         private System.Windows.Forms.GroupBox animFlowBox;
         private System.Windows.Forms.RadioButton radioBoomerang;
+        private System.Windows.Forms.RadioButton radioBoomerangDrop;
     }
 }
 

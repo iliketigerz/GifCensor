@@ -34,7 +34,7 @@ namespace GifCensor
             this.lblSel = new System.Windows.Forms.Label();
             this.txtPxlSize = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.btnCensor = new System.Windows.Forms.Button();
+            this.btnProcess = new System.Windows.Forms.Button();
             this.radioPixel = new System.Windows.Forms.RadioButton();
             this.radioSolid = new System.Windows.Forms.RadioButton();
             this.radioBlur = new System.Windows.Forms.RadioButton();
@@ -77,7 +77,7 @@ namespace GifCensor
             this.btnClearMask = new System.Windows.Forms.Button();
             this.btnFirst = new System.Windows.Forms.Button();
             this.btnLast = new System.Windows.Forms.Button();
-            this.checkFrameRange = new System.Windows.Forms.CheckBox();
+            this.checkUseFrameRange = new System.Windows.Forms.CheckBox();
             this.numMinFrame = new System.Windows.Forms.NumericUpDown();
             this.numMaxFrame = new System.Windows.Forms.NumericUpDown();
             this.btnFrameStart = new System.Windows.Forms.Button();
@@ -97,6 +97,10 @@ namespace GifCensor
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.webView21 = new Microsoft.Web.WebView2.WinForms.WebView2();
             this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.animFlowBox = new System.Windows.Forms.GroupBox();
+            this.radioBoomerang = new System.Windows.Forms.RadioButton();
+            this.radioReverse = new System.Windows.Forms.RadioButton();
             this.lblVersion = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarHue)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSat)).BeginInit();
@@ -111,6 +115,8 @@ namespace GifCensor
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.webView21)).BeginInit();
             this.tabControl1.SuspendLayout();
+            this.tabPage3.SuspendLayout();
+            this.animFlowBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblSize
@@ -152,18 +158,18 @@ namespace GifCensor
             this.label1.TabIndex = 7;
             this.label1.Text = "Pixel Size";
             // 
-            // btnCensor
+            // btnProcess
             // 
-            this.btnCensor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCensor.Enabled = false;
-            this.btnCensor.Location = new System.Drawing.Point(993, 649);
-            this.btnCensor.Name = "btnCensor";
-            this.btnCensor.Size = new System.Drawing.Size(75, 23);
-            this.btnCensor.TabIndex = 8;
-            this.btnCensor.Text = "Process";
-            this.toolTip1.SetToolTip(this.btnCensor, "Apply the effect");
-            this.btnCensor.UseVisualStyleBackColor = true;
-            this.btnCensor.Click += new System.EventHandler(this.btnCensor_Click);
+            this.btnProcess.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnProcess.Enabled = false;
+            this.btnProcess.Location = new System.Drawing.Point(990, 649);
+            this.btnProcess.Name = "btnProcess";
+            this.btnProcess.Size = new System.Drawing.Size(78, 23);
+            this.btnProcess.TabIndex = 8;
+            this.btnProcess.Text = "Process";
+            this.toolTip1.SetToolTip(this.btnProcess, "Apply the effect");
+            this.btnProcess.UseVisualStyleBackColor = true;
+            this.btnProcess.Click += new System.EventHandler(this.btnProcess_Click);
             // 
             // radioPixel
             // 
@@ -402,7 +408,7 @@ namespace GifCensor
             this.btnClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnClear.Location = new System.Drawing.Point(901, 649);
             this.btnClear.Name = "btnClear";
-            this.btnClear.Size = new System.Drawing.Size(86, 23);
+            this.btnClear.Size = new System.Drawing.Size(83, 23);
             this.btnClear.TabIndex = 33;
             this.btnClear.Text = "Clear Images";
             this.toolTip1.SetToolTip(this.btnClear, "Clear the image history and the current image");
@@ -579,17 +585,17 @@ namespace GifCensor
             this.btnLast.UseVisualStyleBackColor = true;
             this.btnLast.Click += new System.EventHandler(this.btnLast_Click);
             // 
-            // checkFrameRange
+            // checkUseFrameRange
             // 
-            this.checkFrameRange.AutoSize = true;
-            this.checkFrameRange.Location = new System.Drawing.Point(21, 91);
-            this.checkFrameRange.Name = "checkFrameRange";
-            this.checkFrameRange.Size = new System.Drawing.Size(131, 17);
-            this.checkFrameRange.TabIndex = 53;
-            this.checkFrameRange.Text = "Apply effect to frames:";
-            this.toolTip1.SetToolTip(this.checkFrameRange, "Only apply the effect to the frames in this range");
-            this.checkFrameRange.UseVisualStyleBackColor = true;
-            this.checkFrameRange.CheckedChanged += new System.EventHandler(this.checkFrameRange_CheckedChanged);
+            this.checkUseFrameRange.AutoSize = true;
+            this.checkUseFrameRange.Location = new System.Drawing.Point(21, 91);
+            this.checkUseFrameRange.Name = "checkUseFrameRange";
+            this.checkUseFrameRange.Size = new System.Drawing.Size(131, 17);
+            this.checkUseFrameRange.TabIndex = 53;
+            this.checkUseFrameRange.Text = "Apply effect to frames:";
+            this.toolTip1.SetToolTip(this.checkUseFrameRange, "Only apply the effect to the frames in this range");
+            this.checkUseFrameRange.UseVisualStyleBackColor = true;
+            this.checkUseFrameRange.CheckedChanged += new System.EventHandler(this.checkFrameRange_CheckedChanged);
             // 
             // numMinFrame
             // 
@@ -707,7 +713,7 @@ namespace GifCensor
             this.groupBox2.Controls.Add(this.btnClearMask);
             this.groupBox2.Controls.Add(this.numMaxFrame);
             this.groupBox2.Controls.Add(this.panelChromaColor);
-            this.groupBox2.Controls.Add(this.checkFrameRange);
+            this.groupBox2.Controls.Add(this.checkUseFrameRange);
             this.groupBox2.Controls.Add(this.btnPickColor);
             this.groupBox2.Controls.Add(this.numMinFrame);
             this.groupBox2.Controls.Add(this.txtChromaSens);
@@ -830,7 +836,7 @@ namespace GifCensor
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage1.Size = new System.Drawing.Size(1052, 425);
             this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "Main";
+            this.tabPage1.Text = "Mask";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
             // webView21
@@ -855,11 +861,60 @@ namespace GifCensor
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Location = new System.Drawing.Point(12, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(1060, 451);
             this.tabControl1.TabIndex = 35;
+            // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.animFlowBox);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage3.Size = new System.Drawing.Size(1052, 425);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "Effects";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // animFlowBox
+            // 
+            this.animFlowBox.Controls.Add(this.radioBoomerang);
+            this.animFlowBox.Controls.Add(this.radioReverse);
+            this.animFlowBox.Location = new System.Drawing.Point(180, 99);
+            this.animFlowBox.Name = "animFlowBox";
+            this.animFlowBox.Size = new System.Drawing.Size(200, 100);
+            this.animFlowBox.TabIndex = 1;
+            this.animFlowBox.TabStop = false;
+            this.animFlowBox.Text = "Animation Flow";
+            // 
+            // radioBoomerang
+            // 
+            this.radioBoomerang.AutoCheck = false;
+            this.radioBoomerang.AutoSize = true;
+            this.radioBoomerang.Location = new System.Drawing.Point(6, 42);
+            this.radioBoomerang.Name = "radioBoomerang";
+            this.radioBoomerang.Size = new System.Drawing.Size(79, 17);
+            this.radioBoomerang.TabIndex = 3;
+            this.radioBoomerang.TabStop = true;
+            this.radioBoomerang.Text = "Boomerang";
+            this.radioBoomerang.UseVisualStyleBackColor = true;
+            this.radioBoomerang.Click += new System.EventHandler(this.RadioBtnNonReq_Click);
+            // 
+            // radioReverse
+            // 
+            this.radioReverse.AutoCheck = false;
+            this.radioReverse.AutoSize = true;
+            this.radioReverse.Location = new System.Drawing.Point(6, 19);
+            this.radioReverse.Name = "radioReverse";
+            this.radioReverse.Size = new System.Drawing.Size(65, 17);
+            this.radioReverse.TabIndex = 2;
+            this.radioReverse.TabStop = true;
+            this.radioReverse.Text = "Reverse";
+            this.radioReverse.UseVisualStyleBackColor = true;
+            this.radioReverse.Click += new System.EventHandler(this.RadioBtnNonReq_Click);
             // 
             // lblVersion
             // 
@@ -891,7 +946,7 @@ namespace GifCensor
             this.Controls.Add(this.chkDispProcessed);
             this.Controls.Add(this.btnNext);
             this.Controls.Add(this.btnPrev);
-            this.Controls.Add(this.btnCensor);
+            this.Controls.Add(this.btnProcess);
             this.Controls.Add(this.lblSel);
             this.Controls.Add(this.lblSize);
             this.MinimumSize = new System.Drawing.Size(1100, 720);
@@ -917,6 +972,9 @@ namespace GifCensor
             this.tabPage1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.webView21)).EndInit();
             this.tabControl1.ResumeLayout(false);
+            this.tabPage3.ResumeLayout(false);
+            this.animFlowBox.ResumeLayout(false);
+            this.animFlowBox.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -927,7 +985,7 @@ namespace GifCensor
         private System.Windows.Forms.Label lblSel;
         private System.Windows.Forms.TextBox txtPxlSize;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button btnCensor;
+        private System.Windows.Forms.Button btnProcess;
         private System.Windows.Forms.RadioButton radioPixel;
         private System.Windows.Forms.RadioButton radioSolid;
         private System.Windows.Forms.RadioButton radioBlur;
@@ -970,7 +1028,7 @@ namespace GifCensor
         private System.Windows.Forms.Button btnClearMask;
         private System.Windows.Forms.Button btnFirst;
         private System.Windows.Forms.Button btnLast;
-        private System.Windows.Forms.CheckBox checkFrameRange;
+        private System.Windows.Forms.CheckBox checkUseFrameRange;
         private System.Windows.Forms.NumericUpDown numMinFrame;
         private System.Windows.Forms.NumericUpDown numMaxFrame;
         private System.Windows.Forms.Button btnFrameEnd;
@@ -991,6 +1049,10 @@ namespace GifCensor
         private Microsoft.Web.WebView2.WinForms.WebView2 webView21;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.Label lblVersion;
+        private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.RadioButton radioReverse;
+        private System.Windows.Forms.GroupBox animFlowBox;
+        private System.Windows.Forms.RadioButton radioBoomerang;
     }
 }
 

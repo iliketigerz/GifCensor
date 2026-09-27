@@ -96,13 +96,15 @@ namespace GifCensor
             this.btnShowRange = new System.Windows.Forms.Button();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.webView21 = new Microsoft.Web.WebView2.WinForms.WebView2();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabUtilities = new System.Windows.Forms.TabControl();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.animFlowBox = new System.Windows.Forms.GroupBox();
             this.radioBoomerangDrop = new System.Windows.Forms.RadioButton();
             this.radioBoomerang = new System.Windows.Forms.RadioButton();
             this.radioReverse = new System.Windows.Forms.RadioButton();
             this.lblVersion = new System.Windows.Forms.Label();
+            this.btnTrimLength = new System.Windows.Forms.Button();
+            this.btnCrop = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarHue)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSat)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarLum)).BeginInit();
@@ -115,7 +117,7 @@ namespace GifCensor
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.webView21)).BeginInit();
-            this.tabControl1.SuspendLayout();
+            this.tabUtilities.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.animFlowBox.SuspendLayout();
             this.SuspendLayout();
@@ -772,7 +774,7 @@ namespace GifCensor
             // 
             // btnPurge
             // 
-            this.btnPurge.Location = new System.Drawing.Point(15, 107);
+            this.btnPurge.Location = new System.Drawing.Point(12, 106);
             this.btnPurge.Name = "btnPurge";
             this.btnPurge.Size = new System.Drawing.Size(125, 46);
             this.btnPurge.TabIndex = 63;
@@ -784,6 +786,8 @@ namespace GifCensor
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.btnCrop);
+            this.tabPage2.Controls.Add(this.btnTrimLength);
             this.tabPage2.Controls.Add(this.btnPurge);
             this.tabPage2.Controls.Add(this.checkReuseProcessed);
             this.tabPage2.Controls.Add(this.pictureBox2);
@@ -855,19 +859,19 @@ namespace GifCensor
             this.webView21.TabIndex = 4;
             this.webView21.ZoomFactor = 1D;
             // 
-            // tabControl1
+            // tabUtilities
             // 
-            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.tabUtilities.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Controls.Add(this.tabPage3);
-            this.tabControl1.Location = new System.Drawing.Point(12, 12);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(1060, 451);
-            this.tabControl1.TabIndex = 35;
+            this.tabUtilities.Controls.Add(this.tabPage1);
+            this.tabUtilities.Controls.Add(this.tabPage2);
+            this.tabUtilities.Controls.Add(this.tabPage3);
+            this.tabUtilities.Location = new System.Drawing.Point(12, 12);
+            this.tabUtilities.Name = "tabUtilities";
+            this.tabUtilities.SelectedIndex = 0;
+            this.tabUtilities.Size = new System.Drawing.Size(1060, 451);
+            this.tabUtilities.TabIndex = 35;
             // 
             // tabPage3
             // 
@@ -877,7 +881,7 @@ namespace GifCensor
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage3.Size = new System.Drawing.Size(1052, 425);
             this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "Effects";
+            this.tabPage3.Text = "Animation Effects";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
             // animFlowBox
@@ -885,7 +889,7 @@ namespace GifCensor
             this.animFlowBox.Controls.Add(this.radioBoomerangDrop);
             this.animFlowBox.Controls.Add(this.radioBoomerang);
             this.animFlowBox.Controls.Add(this.radioReverse);
-            this.animFlowBox.Location = new System.Drawing.Point(180, 99);
+            this.animFlowBox.Location = new System.Drawing.Point(77, 49);
             this.animFlowBox.Name = "animFlowBox";
             this.animFlowBox.Size = new System.Drawing.Size(200, 100);
             this.animFlowBox.TabIndex = 1;
@@ -943,6 +947,30 @@ namespace GifCensor
             this.lblVersion.Text = "v1.1";
             this.lblVersion.Click += new System.EventHandler(this.lblVersion_Click);
             // 
+            // btnTrimLength
+            // 
+            this.btnTrimLength.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnTrimLength.Location = new System.Drawing.Point(15, 254);
+            this.btnTrimLength.Name = "btnTrimLength";
+            this.btnTrimLength.Size = new System.Drawing.Size(125, 72);
+            this.btnTrimLength.TabIndex = 64;
+            this.btnTrimLength.Text = "Trim file duration to start / end frame";
+            this.toolTip1.SetToolTip(this.btnTrimLength, "Deletes any extracted or processed frame folders, in the same folder as the curre" +
+        "ntly loaded file");
+            this.btnTrimLength.UseVisualStyleBackColor = true;
+            this.btnTrimLength.Click += new System.EventHandler(this.btnTrimLength_Click);
+            // 
+            // btnCrop
+            // 
+            this.btnCrop.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnCrop.Location = new System.Drawing.Point(15, 332);
+            this.btnCrop.Name = "btnCrop";
+            this.btnCrop.Size = new System.Drawing.Size(125, 81);
+            this.btnCrop.TabIndex = 2;
+            this.btnCrop.Text = "Crop to masked area";
+            this.btnCrop.UseVisualStyleBackColor = true;
+            this.btnCrop.Click += new System.EventHandler(this.btnCrop_Click);
+            // 
             // Form1
             // 
             this.AllowDrop = true;
@@ -955,7 +983,7 @@ namespace GifCensor
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.btnLast);
             this.Controls.Add(this.btnFirst);
-            this.Controls.Add(this.tabControl1);
+            this.Controls.Add(this.tabUtilities);
             this.Controls.Add(this.btnClear);
             this.Controls.Add(this.richTextBox1);
             this.Controls.Add(this.chkDispProcessed);
@@ -986,7 +1014,7 @@ namespace GifCensor
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.tabPage1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.webView21)).EndInit();
-            this.tabControl1.ResumeLayout(false);
+            this.tabUtilities.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);
             this.animFlowBox.ResumeLayout(false);
             this.animFlowBox.PerformLayout();
@@ -1062,13 +1090,15 @@ namespace GifCensor
         private System.Windows.Forms.Button btnShowRange;
         private System.Windows.Forms.TabPage tabPage1;
         private Microsoft.Web.WebView2.WinForms.WebView2 webView21;
-        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabControl tabUtilities;
         private System.Windows.Forms.Label lblVersion;
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.RadioButton radioReverse;
         private System.Windows.Forms.GroupBox animFlowBox;
         private System.Windows.Forms.RadioButton radioBoomerang;
         private System.Windows.Forms.RadioButton radioBoomerangDrop;
+        private System.Windows.Forms.Button btnTrimLength;
+        private System.Windows.Forms.Button btnCrop;
     }
 }
 

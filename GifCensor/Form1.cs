@@ -593,18 +593,110 @@ namespace GifCensor
                     await Task.Run(() => MakeGif(frames, inputMedia.FrameDelay, returnPath)); //async? Make a gif from the frames
 
                 }
-                //DebugPrint($"Processing frames GIF...");
-                //processedFrames = await Task.Run(() => ProcessFrameEffects(inputMedia.Frames)); //Async method, go and process the frames in the background
+            }
 
-                //DebugPrint($"Encoding GIF...");
+            else if (inputMedia.Type == MediaType.Video)
+            {
+                DebugPrint("Preparing video processing...");
 
-                ////Stopwatch stopwatch = new Stopwatch();
-                ////stopwatch.Start();
+                string rawFramesDir = GetRawFramesFolder(inputMedia.Path);
+                Directory.CreateDirectory(rawFramesDir);
 
-                //returnPath = AppendFileNumberIfExists(inputMedia.Path);
+                // Extract frames
+                DebugPrint("Extracting video frames with FFmpeg...");
 
-                //await Task.Run(() => MakeGif(processedFrames, inputMedia.FrameDelay, returnPath)); //async? Make a gif from the frames
-                //DebugPrint($"Complete.");
+                string pattern = Path.Combine(rawFramesDir, "frame_%04d.png");
+
+                var conversion = FFmpeg.Conversions.New()
+                    .AddParameter($"-i \"{inputMedia.Path}\" \"{pattern}\"", ParameterPosition.PreInput);
+
+                await conversion.Start();
+
+                // Get frames
+                string[] frameFiles = Directory.GetFiles(rawFramesDir, "*.png")
+                                                .OrderBy(f => f)
+                                                .ToArray();
+
+                int totalFrames = frameFiles.Length;
+
+                // Determine output folder
+                int latestProcessedIndex = GetLatestProcessedFramesIndex(inputMedia.Path);
+                int nextIndex = latestProcessedIndex + 1;
+
+                string processedDir = GetProcessedFramesFolder(inputMedia.Path, nextIndex);
+                Directory.CreateDirectory(processedDir);
+
+                // Determine frame order
+                IEnumerable<string> orderedFrames = frameFiles;
+
+                if (radioReverse.Checked)
+                {
+                    orderedFrames = frameFiles.Reverse();
+                }
+                else if (radioBoomerang.Checked)
+                {
+                    orderedFrames = frameFiles.Concat(frameFiles.Reverse());
+                }
+                else if (radioBoomerangDrop.Checked)
+                {
+                    orderedFrames = frameFiles.Concat(
+                        frameFiles.Reverse()
+                                  .Skip(1)
+                                  .Take(frameFiles.Length - 2));
+                }
+
+                // Write frames in new order
+                int outputFrame = 0;
+
+                foreach (string srcPath in orderedFrames)
+                {
+                    string dstPath = Path.Combine(
+                        processedDir,
+                        $"frame_{outputFrame:0000}.png");
+
+                    File.Copy(srcPath, dstPath);
+
+                    outputFrame++;
+
+                    DebugPrint($"{outputFrame} processed");
+                }
+
+                // Encode video
+                DebugPrint("Encoding video...");
+
+                string outputVideo = AppendFileNumberIfExists(inputMedia.Path);
+
+                ShellFile shellFile = ShellFile.FromFilePath(inputMedia.Path);
+                double fps = (double)(shellFile.Properties.System.Video.FrameRate.Value / 1000);
+
+                string ext = Path.GetExtension(outputVideo).ToLowerInvariant();
+
+                var conversionVideo = FFmpeg.Conversions.New();
+
+                string framePattern = Path.Combine(processedDir, "frame_%04d.png");
+
+                if (ext == ".webm")
+                {
+                    conversionVideo
+                        .AddParameter($"-framerate {fps} -i \"{framePattern}\" -i \"{inputMedia.Path}\"")
+                        .AddParameter("-c:v libvpx-vp9 -pix_fmt yuv420p -crf 12 -b:v 0 -row-mt 1 -deadline good")
+                        .AddParameter("-map 0:v:0 -map 1:a? -c:a copy");
+                }
+                else
+                {
+                    conversionVideo
+                        .AddParameter($"-framerate {fps} -i \"{framePattern}\" -i \"{inputMedia.Path}\"")
+                        .AddParameter("-c:v libx264 -pix_fmt yuv420p -crf 12 -preset slow -profile:v high -level 4.1")
+                        .AddParameter("-map 0:v:0 -map 1:a? -c:a copy");
+                }
+
+                conversionVideo
+                    .SetOutput(outputVideo)
+                    .SetOverwriteOutput(true);
+
+                await conversionVideo.Start();
+
+                returnPath = outputVideo;
             }
 
 
@@ -616,6 +708,7 @@ namespace GifCensor
             if (!CheckFrameRanges())
             {
                 MessageBox.Show("Start frame cannot be after end frame.");
+                Console.WriteLine("Start frame cannot be after end frame.");
                 return null;
             }
 
@@ -869,14 +962,10 @@ namespace GifCensor
 
 
 
-            if (returnString == null)
-            {
-                MessageBox.Show("Fatal error occured");
-                return;
-            }
+           
 
             Console.WriteLine("filepath " + returnString);
-            DebugPrint($"Filepath " + returnString);
+            DebugPrint($"Completed. " + returnString);
 
             if (chkDispProcessed.Checked) //If we should display the new image
             {
@@ -1220,6 +1309,71 @@ namespace GifCensor
             return outputPath;
         }
 
+        private void AddVideoEncodingParameters(IConversion conversionVideo, string outputPath)
+        {
+            string ext = Path.GetExtension(outputPath).ToLowerInvariant();
+
+            if (ext == ".webm")
+            {
+                conversionVideo
+                    .AddParameter("-c:v libvpx-vp9 -pix_fmt yuv420p -crf 12 -b:v 0 -row-mt 1 -deadline good")
+                    .AddParameter("-c:a libopus");
+
+                Debug.Print("webm");
+            }
+            else
+            {
+                conversionVideo
+                    .AddParameter("-c:v libx264 -pix_fmt yuv420p -crf 12 -preset slow -profile:v high -level 4.1")
+                    .AddParameter("-c:a aac");
+
+                Debug.Print("not webm");
+            }
+        }
+
+        private async Task<string> TrimVideo(MediaItem mediaItem, int startFrame, int endFrame, string outputVideo)
+        {
+            ShellFile shellFile = ShellFile.FromFilePath(mediaItem.Path);
+            double fps = (double)(shellFile.Properties.System.Video.FrameRate.Value / 1000);
+
+            double startTime = startFrame / fps;
+            double duration = (endFrame - startFrame + 1) / fps;
+
+            var conversionVideo = FFmpeg.Conversions.New();
+
+            // Input options must come before the input file.
+            conversionVideo.AddParameter($"-ss {startTime} -i \"{mediaItem.Path}\" -t {duration}");
+
+            // Output options come after the input.
+            AddVideoEncodingParameters(conversionVideo, outputVideo);
+
+            conversionVideo
+                .SetOutput(outputVideo)
+                .SetOverwriteOutput(true);
+
+            await conversionVideo.Start();
+
+            return outputVideo;
+        }
+        private void TrimGif(MediaItem mediaItem, int startFrame, int endFrame, string outputPath)
+        {
+            startFrame = Math.Max(0, startFrame);
+            endFrame = Math.Min(mediaItem.Frames.Length - 1, endFrame);
+
+            int frameCount = endFrame - startFrame + 1;
+
+            if (frameCount <= 0)
+                return;
+
+            Image[] trimmedFrames = new Image[frameCount];
+
+            Array.Copy(mediaItem.Frames, startFrame, trimmedFrames, 0, frameCount);
+
+            MakeGif(trimmedFrames, mediaItem.FrameDelay, outputPath);
+
+            foreach (Image frame in trimmedFrames)
+                frame.Dispose();
+        }
 
         private void MakeGif(Image[] images, int delay, string filepath)
         {
@@ -1991,7 +2145,7 @@ namespace GifCensor
             string script = $"window.showMedia('{mediaPath}');";
             await webView21.CoreWebView2.ExecuteScriptAsync(script);
             LoadCachedMask();
-            tabControl1.SelectedIndex = 0;
+            tabUtilities.SelectedIndex = 0;
         }
 
         private async void btnFrameEnd_Click(object sender, EventArgs e)
@@ -2012,7 +2166,7 @@ namespace GifCensor
             string script = $"window.showMedia('{mediaPath}');";
             await webView21.CoreWebView2.ExecuteScriptAsync(script);
             LoadCachedMask();
-            tabControl1.SelectedIndex = 0;
+            tabUtilities.SelectedIndex = 0;
         }
 
         private async Task GetMaskWait()
@@ -2263,7 +2417,370 @@ namespace GifCensor
             }
         }
 
+        private async void btnTrimLength_Click(object sender, EventArgs e)
+        {
+            MediaItem inputMedia = mediaHistory[mediaIndex];
 
+            string returnPath = null;
+
+           if (inputMedia.Type == MediaType.Image)
+            {
+                MessageBox.Show("Cannot trim an image file.");
+                return;
+            }
+           else if (inputMedia.Type == MediaType.Video)
+            {
+                returnPath = AppendFileNumberIfExists(inputMedia.Path);
+                await TrimVideo(inputMedia, (int)numMinFrame.Value, (int)numMaxFrame.Value, returnPath);
+            }
+            else if (inputMedia.Type == MediaType.Gif)
+            {
+                returnPath = AppendFileNumberIfExists(inputMedia.Path);
+                
+                TrimGif(inputMedia, (int)numMinFrame.Value,(int)numMaxFrame.Value, returnPath);
+            }
+
+
+           
+
+            if (chkDispProcessed.Checked && returnPath != null) //If we should display the new image
+            {
+                //Add it to the list
+                await ImportMediaFileAsync(returnPath); // outputVideo is the path to the new MP4
+            }
+
+            DebugPrint($"Completed. " + returnPath);
+
+            Console.WriteLine("index " + mediaIndex + " / count" + mediaHistory.Count);
+            GC.Collect();
+            updatedStartEnd = false;
+            btnProcess.Enabled = true;
+
+        }
+
+        private async void btnCrop_Click(object sender, EventArgs e)
+        {
+            await GetMaskWait();
+
+            if (maskBitmap == null)
+            {
+                MessageBox.Show("Failed to receive mask from WebView.");
+                Console.WriteLine("Failed to receive mask from WebView.");
+                btnProcess.Enabled = true;
+                
+            }
+            else
+            {
+                Rectangle cropRect = GetMaskBounds(maskBitmap);
+
+                if (cropRect == Rectangle.Empty)
+                {
+                    MessageBox.Show("No area was selected.");
+                    btnProcess.Enabled = true;
+                    
+                }
+                else
+                {
+                    string returnPath = await CropMedia(mediaHistory[mediaIndex]);
+
+
+                    if (chkDispProcessed.Checked && returnPath != null) //If we should display the new image
+                    {
+                        //Add it to the list
+                        await ImportMediaFileAsync(returnPath); // outputVideo is the path to the new MP4
+                    }
+
+                    DebugPrint($"Completed. " + returnPath);
+
+                    Console.WriteLine("index " + mediaIndex + " / count" + mediaHistory.Count);
+                    GC.Collect();
+                    updatedStartEnd = false;
+                    btnProcess.Enabled = true;
+
+                }
+            }
+
+
+        }
+
+        private async Task<string> CropMedia(MediaItem inputMedia)
+        {
+            string returnPath = null;
+
+            await GetMaskWait();
+
+            if (maskBitmap == null)
+            {
+                MessageBox.Show("Failed to receive mask from WebView.");
+                Console.WriteLine("Failed to receive mask from WebView.");
+                btnProcess.Enabled = true;
+                return null;
+            }
+
+            Rectangle cropRect = GetMaskBounds(maskBitmap);
+
+            if (cropRect == Rectangle.Empty)
+            {
+                MessageBox.Show("No area was selected.");
+                btnProcess.Enabled = true;
+                return null;
+            }
+
+            if (inputMedia.Type == MediaType.Image)
+            {
+                Image[] processedFrames = await Task.Run(() => CropFrames(inputMedia.Frames, cropRect));
+
+                processedFrames[0] = FixFormatting(processedFrames[0]);
+
+                DebugPrint($"Saving image");
+                returnPath = AppendFileNumberIfExists(inputMedia.Path);
+
+                ImageFormat format = GetImageFormat(inputMedia.Path);
+                processedFrames[0].Save(returnPath, format);
+
+                DebugPrint($"Complete.");
+            }
+
+            else if (inputMedia.Type == MediaType.Gif)
+            {
+                DebugPrint($"Processing frames GIF...");
+                Image[] processedFrames = await Task.Run(() => CropFrames(inputMedia.Frames, cropRect)); //Async method, go and process the frames in the background
+
+                DebugPrint($"Encoding GIF...");
+
+                returnPath = AppendFileNumberIfExists(inputMedia.Path);
+
+                await Task.Run(() => MakeGif(processedFrames, inputMedia.FrameDelay, returnPath)); //async? Make a gif from the frames
+                DebugPrint($"Complete.");
+            }
+            else if (inputMedia.Type == MediaType.Video)
+            {
+                    DebugPrint("Preparing video processing...");
+
+                    string videoDir = Path.GetDirectoryName(inputMedia.Path);
+                    string baseName = GetBaseVideoName(inputMedia.Path);
+
+                    // Determine output index
+                    int latestProcessedIndex = GetLatestProcessedFramesIndex(inputMedia.Path);
+                    int nextIndex = latestProcessedIndex + 1;
+
+                    // Determine raw frames folder
+                    string rawFramesDir = GetRawFramesFolder(inputMedia.Path);
+                    Console.WriteLine("raw frames dir " + rawFramesDir);
+
+                    
+                        Directory.CreateDirectory(rawFramesDir);
+                        DebugPrint("Extracting video frames with FFmpeg...");
+
+                        string pattern = Path.Combine(rawFramesDir, "frame_%04d.png");
+                        var conversion = FFmpeg.Conversions.New()
+                            .AddParameter($"-i \"{inputMedia.Path}\" \"{pattern}\"", ParameterPosition.PreInput);
+
+                        await conversion.Start();
+                    
+
+                    // Determine input frames (either raw or previous processed generation)
+                    string inputFramesDir = rawFramesDir; //Set input frames directory to the unprocessed frames folder
+
+                    // Determine output frames folder
+                    string processedDir = GetProcessedFramesFolder(inputMedia.Path, nextIndex);
+                    if (!Directory.Exists(processedDir))
+                        Directory.CreateDirectory(processedDir);
+
+                    DebugPrint($"Processing frames: {processedDir}");
+
+                    // Load frames
+                    string[] frameFiles = Directory.GetFiles(inputFramesDir, "*.png")
+                                                   .OrderBy(f => f)
+                                                   .ToArray();
+                    int totalFrames = frameFiles.Length;
+
+                    // Process frames
+
+                    for (int i = 0; i < totalFrames; i++)
+                    {
+                        string srcPath = frameFiles[i];
+                        string dstPath = Path.Combine(processedDir, $"frame_{i:0000}.png");
+
+
+                    using (Bitmap frame = new Bitmap(srcPath))
+                    using (Image processed = CropFrame(frame, cropRect))
+                    {
+                        processed.Save(dstPath, ImageFormat.Png);
+                    }
+
+                        DebugPrint($"{i + 1}/{totalFrames} processed");
+                    }
+
+                    
+                        DebugPrint("Encoding video...");
+
+                        string outputVideo = AppendFileNumberIfExists(inputMedia.Path);
+
+                        ShellFile shellFile = ShellFile.FromFilePath(inputMedia.Path);
+                        double fps = (double)(shellFile.Properties.System.Video.FrameRate.Value / 1000);
+
+                        string ext = Path.GetExtension(outputVideo).ToLowerInvariant();
+
+                        // Create FFmpeg conversion
+                        var conversionVideo = FFmpeg.Conversions.New();
+
+                        string framePattern = Path.Combine(processedDir, "frame_%04d.png");
+
+                        if (ext == ".webm")
+                        {
+                            // WebM encoding with audio preserved
+                            conversionVideo
+                                .AddParameter($"-framerate {fps} -i \"{framePattern}\" -i \"{inputMedia.Path}\"") // input frames + original audio
+                                .AddParameter("-c:v libvpx-vp9 -pix_fmt yuv420p -crf 12 -b:v 0 -row-mt 1 -deadline good")
+                                .AddParameter("-map 0:v:0 -map 1:a? -c:a copy"); // map frames as video, original audio if present
+                        }
+                        else
+                        {
+                            // MP4 encoding with audio preserved
+                            conversionVideo
+                                .AddParameter($"-framerate {fps} -i \"{framePattern}\" -i \"{inputMedia.Path}\"")
+                                .AddParameter("-c:v libx264 -pix_fmt yuv420p -crf 12 -preset slow -profile:v high -level 4.1")
+                                .AddParameter("-map 0:v:0 -map 1:a? -c:a copy"); // video from frames, audio from original
+                        }
+
+                        conversionVideo
+                            .SetOutput(outputVideo)
+                            .SetOverwriteOutput(true);
+
+                        await conversionVideo.Start();
+
+                        returnPath = outputVideo;
+                    
+                
+
+            }
+
+
+            return returnPath;
+        }
+
+        //private Image[] CropFrames(Image[] frames, Rectangle cropRect)
+        //{
+        //    return frames.Select(frame =>
+        //    {
+        //        Bitmap cropped = new Bitmap(cropRect.Width, cropRect.Height);
+
+        //        using (Graphics g = Graphics.FromImage(cropped))
+        //            g.DrawImage(frame, new Rectangle(0, 0, cropRect.Width, cropRect.Height), cropRect, GraphicsUnit.Pixel);
+
+        //        return (Image)cropped;
+        //    }).ToArray();
+        //}
+        private Image CropFrame(Image frame, Rectangle cropRect)
+        {
+            using (Bitmap source = new Bitmap(frame))
+                return source.Clone(cropRect, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+        }
+
+        private Image[] CropFrames(Image[] frames, Rectangle cropRect)
+        {
+            return frames.Select(frame => CropFrame(frame, cropRect)).ToArray();
+        }
+        private Rectangle GetMaskBounds(Bitmap mask)
+        {
+            Rectangle bounds = Rectangle.Empty;
+
+            BitmapData data = mask.LockBits(
+                new Rectangle(0, 0, mask.Width, mask.Height),
+                ImageLockMode.ReadOnly,
+                System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+            try
+            {
+                int minX = mask.Width, minY = mask.Height;
+                int maxX = -1, maxY = -1;
+
+                unsafe
+                {
+                    for (int y = 0; y < mask.Height; y++)
+                    {
+                        byte* row = (byte*)data.Scan0 + y * data.Stride;
+
+                        for (int x = 0; x < mask.Width; x++)
+                        {
+                            if (row[x * 4 + 3] > 0)
+                            {
+                                if (x < minX) minX = x;
+                                if (x > maxX) maxX = x;
+                                if (y < minY) minY = y;
+                                if (y > maxY) maxY = y;
+                            }
+                        }
+                    }
+                }
+
+                if (maxX >= 0)
+                {
+                    bounds = new Rectangle(
+                        minX,
+                        minY,
+                        maxX - minX + 1,
+                        maxY - minY + 1);
+
+                    // Make dimensions suitable for YUV420/H.264.
+                    if (bounds.Width % 2 != 0)
+                    {
+                        if (bounds.Right < mask.Width)
+                            bounds.Width++;
+                        else
+                            bounds.Width--;
+                    }
+
+                    if (bounds.Height % 2 != 0)
+                    {
+                        if (bounds.Bottom < mask.Height)
+                            bounds.Height++;
+                        else
+                            bounds.Height--;
+                    }
+                }
+            }
+            finally
+            {
+                mask.UnlockBits(data);
+            }
+
+            return bounds;
+        }
+
+        //private Rectangle GetMaskBounds(Bitmap mask)
+        //{
+        //    int minX = mask.Width;
+        //    int minY = mask.Height;
+        //    int maxX = -1;
+        //    int maxY = -1;
+
+        //    for (int y = 0; y < mask.Height; y++)
+        //    {
+        //        for (int x = 0; x < mask.Width; x++)
+        //        {
+        //            Color pixel = mask.GetPixel(x, y);
+
+        //            if (pixel.A > 0)
+        //            {
+        //                minX = Math.Min(minX, x);
+        //                minY = Math.Min(minY, y);
+        //                maxX = Math.Max(maxX, x);
+        //                maxY = Math.Max(maxY, y);
+        //            }
+        //        }
+        //    }
+
+        //    if (maxX < 0)
+        //        return Rectangle.Empty;
+
+        //    return new Rectangle(
+        //        minX,
+        //        minY,
+        //        maxX - minX + 1,
+        //        maxY - minY + 1);
+        //}
 
         //private void ShowMedia(MediaItem media)
         //{
